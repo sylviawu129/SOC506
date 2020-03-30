@@ -1,0 +1,310 @@
+---
+title: "Homework Template"
+subtitle: "SOC 506: Quantitative Techniques in Sociology"
+author: "[PUT YOUR NAME HERE]"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+## Set knitr options here
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(comment = NA)
+knitr::opts_chunk$set(cache = TRUE)
+
+```
+
+```{r libraries, include=FALSE}
+## load necessary libraryies her
+
+## List of packages used
+lop <- c("tidyverse","maps","classInt","XML","RCurl","rlist",'kableExtra')
+
+## Check if installed
+new.packages <- lop[!(lop %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+## Load packages
+for(i in lop){library(package=i,character.only = TRUE) }
+
+## Load non CRAN Packages
+if(!'bbplot'%in%installed.packages()[,"Package"]){
+  devtools::install_github('bbc/bbplot')
+}
+
+library('bbplot')
+```
+
+
+**Notes about this Template**
+
+* This is an example RMarkdown doc to help prepare for the homeworks and labs coming up in the next couple weeks.
+* Rmarkdown is very powerful.
+* This demonstrates some of the neat things that can be done, you should look to play with it and learn more about it as the quarter progresses.
+
+
+
+# Question 1
+
+The New York Times maintains a set COVID-19 cases and deaths by state and county for the US. Artical can be found [here](https://www.nytimes.com/article/coronavirus-county-data-us.html?smid=ig-nytimes&utm_source=like2buy.curalate.com&crl8_id=1b624724-1c1a-4e0d-bb43-f4d32455ea31) and the github repo to access the data can be found [here](https://github.com/nytimes/covid-19-data).
+
+Let's build a map of state level *cases* and county level *cases*.
+
+# Solution 
+
+## Visualization of COVID-19 {.tabset}
+
+#### Data
+```{r state_data,results='hide',message=FALSE}
+## Load NYT COVID Data
+covid19_state<-read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
+date<-'2020-03-25'
+```
+
+We will consider `r date` for this Homework template.
+
+```{r}
+## Select out 03/25 date
+covid19_state_2020_03_25<-covid19_state %>% filter(date==date)
+
+## load United States state map data
+states <- map_data("state")
+
+## rename state to region
+names(covid19_state_2020_03_25)[2]<-"region"
+## lowercase region
+covid19_state_2020_03_25$region<-tolower(covid19_state_2020_03_25$region)
+
+## merge COVID data with Map data
+mergeStates <- inner_join(states, covid19_state_2020_03_25, by = "region")
+mergeStates<-as_tibble(mergeStates)
+```
+
+### State 
+
+```{r,out.width = '1200'}
+
+
+classes <- classIntervals(covid19_state_2020_03_25$cases, n = 5, style = "jenks")
+
+scale<-list(
+  min = min(covid19_state_2020_03_25$cases),
+  max = max(covid19_state_2020_03_25$cases),
+  breaks = classes$brks
+)
+
+
+g <- ggplot() + geom_polygon(data=mergeStates, 
+            aes(x=long, y=lat, group=group, fill = cases), 
+              color="black", size = 0.2) + 
+            scale_fill_continuous(name="COVID-19 Cases", low = "lightblue", 
+            high = "darkblue",limits = c(scale$min,scale$max), breaks=scale$breaks, 
+               na.value = "grey50",trans="log") +
+           labs(title="COVID-19 Cases 03/25/2020")+
+           theme(legend.position = "bottom",legend.key.width = unit(2, "cm"),legend.text = element_text(angle = 270, vjust=.5))
+g
+```
+
+
+### County
+
+```{r county_data,results='hide',message=FALSE}
+## Load US County Data
+data(county.fips)
+## load United States state map data
+counties<- map_data("county")
+## set up fips file
+fips.codes <- county.fips %>%
+  # create two new variables, splitting "polyname" on the comma
+  separate(polyname, c("region", "subregion"), ",")
+
+
+
+## Load NYT COVID Data
+covid19_county<-read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv")
+covid19_county$fips<-as.numeric(covid19_county$fips)
+
+counties <- full_join(counties, fips.codes, by=c("region","subregion"))
+
+
+```
+
+```{r}
+## Select out 03/25 date
+covid19_county_2020_03_25<-covid19_county %>% filter(date==date)
+
+## Combine 03/25 data with county data
+counties<- full_join(counties, covid19_county_2020_03_25, by=c("fips"="fips"))
+
+```
+
+
+```{r,out.width = '1200'}
+
+classes <- classIntervals(covid19_county_2020_03_25$cases, n = 5, style = "jenks")
+
+scale<-list(
+  min = min(covid19_county_2020_03_25$cases),
+  max = max(covid19_county_2020_03_25$cases),
+  breaks = classes$brks
+)
+
+
+g <- ggplot() + geom_polygon(data=counties, 
+            aes(x=long, y=lat, group=group, fill = cases), 
+              color="black", size = 0.2) + 
+            scale_fill_continuous(name="COVID-19 Cases", low = "lightblue", 
+            high = "darkblue",limits = c(scale$min,scale$max), breaks=scale$breaks, 
+               na.value = "grey50",trans="log") +
+           labs(title="COVID-19 Cases by County, 03/25/2020")+ 
+           theme(legend.position = "bottom",legend.key.width = unit(2, "cm"),   
+                 legend.text = element_text(angle = 270, vjust=.5))
+           
+           
+g
+```
+
+# Question 2
+
+# Solution
+
+## State Curves {.tabset}
+
+### Washington
+```{r}
+
+st<-covid19_state %>% filter(state=='Washington')
+line <- ggplot(st, aes(x = date, y = cases)) +
+  geom_line(colour = "#1380A1", size = 1) +
+  geom_hline(yintercept = 0, size = 1, colour="#333333") +
+  bbc_style() +
+  labs(title="Washington COVID-19 Cases",
+       subtitle = "NYT Data")
+line
+```
+
+### New York
+```{r}
+
+st<-covid19_state %>% filter(state=='New York')
+line <- ggplot(st, aes(x = date, y = cases)) +
+  geom_line(colour = "#1380A1", size = 1) +
+  geom_hline(yintercept = 0, size = 1, colour="#333333") +
+  bbc_style() +
+  labs(title="New York COVID-19 Cases",
+       subtitle = "NYT Data")
+line
+```
+
+### California
+```{r}
+st<-covid19_state %>% filter(state=='California')
+line <- ggplot(st, aes(x = date, y = cases)) +
+  geom_line(colour = "#1380A1", size = 1) +
+  geom_hline(yintercept = 0, size = 1, colour="#333333") +
+  bbc_style() +
+  labs(title="California COVID-19 Cases",
+       subtitle = "NYT Data")
+line
+
+```
+
+# Question 3
+
+# Solution
+
+## Washington State {.tabset}
+
+```{r}
+## use google cache verision to get around java script issues
+## https://www.doh.wa.gov/Emergencies/Coronavirus
+theurl <- getURL("https://webcache.googleusercontent.com/search?q=cache:PjWUDebdvq4J:https://www.doh.wa.gov/emergencies/coronavirus+&cd=1&hl=en&ct=clnk&gl=us",.opts = list(ssl.verifypeer = FALSE) )
+tables <- readHTMLTable(theurl)
+tables <- list.clean(tables, fun = is.null, recursive = FALSE)
+```
+
+### Table: Confirmed Cases and Deaths by County
+```{r}
+#for(i in 1:length(tables)){
+  i = 1
+  kable(tables[[i]]) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  scroll_box(width = "500px", height = "200px")
+#}
+```
+
+### Table: Count of Indivuals Tested
+```{r}
+#for(i in 1:length(tables)){
+  i = 2
+  kable(tables[[i]]) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  scroll_box(width = "500px", height = "200px")
+#}
+```
+
+
+### Table: Confirmed Cases / Deaths by Age
+```{r}
+#for(i in 1:length(tables)){
+  i = 3
+  kable(tables[[i]]) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  scroll_box(width = "500px", height = "200px")
+#}
+```
+
+### Table: Confirmed Cases / Deaths by Gender
+```{r}
+#for(i in 1:length(tables)){
+  i = 4
+  kable(tables[[i]]) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  scroll_box(width = "500px", height = "200px")
+#}
+```
+
+### Confirmed Cases
+
+
+```{r}
+smart.round <- function(x) {
+  y <- floor(x)
+  indices <- tail(order(x-y), round(sum(x)) - sum(y))
+  y[indices] <- y[indices] + 1
+  y
+}
+
+
+## Assume 80+ is 12%
+age_count_tmp<-3723*c(.02,.10,.15,.14,.18,.16,.13,.12)
+age_count<-smart.round(age_count_tmp)
+
+age_group<-tables[[3]]
+names(age_group)<-gsub(" ","_",names(age_group))
+age_group$percent_of_cases_numeric<-c(.02,.10,.15,.14,.18,.16,.13,.13)
+age_group$percent_of_death_numeric<-c(0,0,0,.01,.06,.11,.28,.54)
+age_group<-cbind(age_group,age_count)
+
+ggplot(age_group, aes(Age_Group, percent_of_cases_numeric )) + 
+  geom_bar(stat = 'identity',colour = "white", fill = "#1380A1")+
+  bbc_style()+
+  labs(title = "Washington COVID Cases",
+       subtitle = "Age Distribution of Confirmed Cases, 03/27/20")
+```
+
+### Confirmed Deaths
+
+```{r}
+ggplot(age_group, aes(Age_Group, percent_of_death_numeric)) + 
+  geom_bar(stat = 'identity',colour = "white", fill = "#1380A1")+
+  bbc_style()+
+  labs(title = "Washington COVID Cases",
+       subtitle = "Age Distribution of Deaths, 03/27/20")
+
+
+```
+
