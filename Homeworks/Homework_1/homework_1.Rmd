@@ -1,0 +1,360 @@
+---
+title: "Homework Template"
+subtitle: "SOC 506: Quantitative Techniques in Sociology"
+author: "[PUT YOUR NAME HERE]"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: false
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+## Set knitr options here
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(comment = NA)
+knitr::opts_chunk$set(cache = TRUE)
+
+```
+
+```{r libraries, include=FALSE}
+## load necessary libraryies her
+
+## List of packages used
+lop <- c("tidyverse")
+
+## Check if installed
+new.packages <- lop[!(lop %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+## Load packages
+for(i in lop){library(package=i,character.only = TRUE) }
+
+```
+
+
+> All Homowork is to be submitted as an R Markdown HTML document to canvas.
+
+
+# Question 1
+
+Write an R function that, given a numeric vector $x$ calculates its mean, population variance, and population standard deviation, that is, if $x_i$ are the components of $x$ and $n$ is the length of $x$, then the mean is
+
+$$\mu = 1/n \sum_{i=1}^n x_i$$
+
+and with $\mu$ given by the above the population variance is given by
+
+$$\sigma^2 = (1/n) \sum_{i=1}^n (x_i-\mu)^2$$
+
+and with $\sigma^2$ given by the above the population standard deviation is $\sigma$ (the square root of the variance).
+Do not use the R functions mean, var, or sd. You may use the R function sum or any other R function in the R core (what is available without using the R function library to attach a package).
+
+Your function should return a list with three components named mean, var, and sd, which are the three things you calculated.
+
+Not only write a function, but also show it working on the data obtained from the [gssr](https://kjhealy.github.io/gssr/) package discussed in lab ($x$) and also on set of randomly generated data ($y$).
+
+```{r,message=FALSE}
+library(gssr)
+data(gss_panel06_long)
+x <- as.numeric(gss_panel06_long$year)
+x<-as.numeric(gss_panel06_long$year)[!is.na(x)]
+y<-rnorm(200,1,5)
+```
+
+## Solution
+
+# Question 2
+
+This is a modification of problem 1. Now we will allow unequal probabilities for the data values. So now we have two vectors of the same length, call them x and p and the latter is a probability vector, meaning its components are nonnegative and sum to one.
+
+If $x_i$ are the components of x and pi are the components of $p$ and $n$ is the length of both $x$ and $p$, then the equations in problem 1 are modified to 
+
+$$\mu = \sum_{i=1}^n p_i x_i$$
+for the mean, and
+$$\sigma^2 = \sum_{i=1}^n (x_i-\mu)^2 p_i$$
+for the population variance. As before and as always, the standard deviation is the square root of the variance.
+
+Data for this problem below:
+
+```{r,message=FALSE}
+## From gssr example: https://kjhealy.github.io/gssr/articles/overview.html
+data(gss_sub)
+cont_vars <- c("year", "id", "ballot", "age")
+
+cat_vars <- c("race", "sex", "fefam")
+
+wt_vars <- c("vpsu",
+             "vstrat",
+             "oversamp",
+             "formwt",              # weight to deal with experimental randomization
+             "wtssall",             # weight variable
+             "sampcode",            # sampling error code
+             "sample")              # sampling frame and method
+
+vars <- c(cont_vars, cat_vars, wt_vars)
+
+gss_fam <- gss_sub %>%
+  select(c(cont_vars, cat_vars, wt_vars))
+
+test<-data.frame(year=gss_fam$year,w=gss_fam$wtssall^{-1})
+test<-data.frame(test,p=test$w/sum(test$w))
+head(test)
+
+```
+
+This produces a data frame, that is test\$year is what we are calling x above and test\$p is what we are calling p above. Otherwise, this problem is just like problem 1: write the function and show it working on these data.
+
+
+## Solution
+
+# Question 3
+
+## Background
+
+From Charlie's Basic R Notes (discussed in lecture):
+
+### maximum likelihood estimation
+
+Suppose we want to do maximum likelihood estimation
+for the gamma distribution with unknown shape parameter and known
+scale parameter, which we take to be the R default value.
+```{r label=mle}
+# make up true unknown parameter value ("simulation truth")
+alpha <- pi
+# make up sample size
+n <- 30
+# make up data, set RNG seed to get same data every time
+set.seed(42)
+x <- rgamma(n, shape = alpha)
+# log likelihood function
+logl <- function(alpha, x)
+    sum(dgamma(x, shape = alpha, log = TRUE))
+# need interval to optimize over, true "unknown" parameter
+# value should be in interval mean(x) + or - 3 * sd(x)
+# because E(X) = alpha
+interval <- mean(x) + c(-1, 1) * 3 * sd(x)
+# but have to not allow non-positive parameter values
+interval <- pmax(mean(x) / 1e3, interval)
+# maximize the log likelihood
+oout <- optimize(logl, maximum = TRUE, interval, x = x)
+oout$maximum
+mean(x)
+```
+The point of showing both the maximum likelihood estimator (MLE) and the
+sample mean, both of which are consistent and asymptotically normal estimators
+of the unknown parameter $\alpha$, is just to show that they are different.
+
+A plot of the log likelihood done by the following code
+```{r label=fig2plot,eval=FALSE}
+mylogl <- Vectorize(function(alpha) logl(alpha, x))
+curve(mylogl, from = interval[1], to = interval[2],
+    xlab=expression(alpha), ylab=expression(logl(alpha)))
+```
+```{r label=fig2, echo=FALSE, fig.cap="Graph of Log Likelihood", fig.align="center"}
+mylogl <- Vectorize(function(alpha) logl(alpha, x))
+curve(mylogl, from = interval[1], to = interval[2],
+    xlab=expression(alpha), ylab=expression(logl(alpha)))
+```
+shows that the optimization seems to have worked.  The tricks needed to
+draw this curve we do not want to explain right now.
+
+All of that is interesting, and we will go over it in detail at some
+point in the course.  But in this section, the only point that is
+interesting is how we are using the `...` argument to `optimize`.
+The R function `optimize` does not have an argument named `x`
+or even an argument that comes before `...` in the argument list
+that can be partially matched to `x` (from the documentation quoted
+above only the arguments `f` and `interval` come before
+`...` and neither begins with `x`).  Thus `optimize`
+considers `x` a `...` argument and passes it to `f`
+when `f` is called (many times) from inside `optimize` to evaluate
+the function being maximized (that is `logl` which is called `f`
+inside `optimize`).  When `optimize` calls `f` it does
+it by defining an anonymous function
+```
+function(arg) f(arg, ...)
+```
+(typing `optimize` at the R command line shows you its definition)
+and since we know that in this case `...` matches only the argument
+`x = x`, this is the same as defining the objective function to be
+```
+function(arg) f(arg, x = x)
+```
+or, since `f` is another name for `logl`, as
+```
+function(arg) logl(arg, x = x)
+```
+
+Note that here the R function `optimize` is using the trick
+of "partially evaluated functions" explained in
+[Section 6.3](#partially-evaluated-functions) above.
+It takes the given function,
+which it calls `f` and which can have many arguments, and converts
+it to an anonymous function of one argument.  It passes this to a C function
+named `do_fmin` to actually do the optimization, so we cannot see how
+that works without reading the C source code for R, which we won't bother
+with.  The point is that this C function only needs to know how maximize
+R functions of one variable.  It doesn't need to know about any other
+variables.
+
+#### alternative solution
+
+The preceding section shows the approved (in some circles) way to do that
+problem.
+
+But here is another way (that some people deem evil and stupid).
+Just define `logl` as a function of one variable.
+```{r label="mle-logl-alt"}
+logl <- function(alpha)
+    sum(dgamma(x, shape = alpha, log = TRUE))
+```
+and then do the optimization as before except now we omit the
+`x = x`.
+```{r label="mle-optimize-alt"}
+oout <- optimize(logl, maximum = TRUE, interval)
+oout$maximum
+```
+
+How does that work?  How does `logl` when called from within
+`optimize` find out what `x` is?
+
+The short answer is that it looks it up in the R global environment
+(which is where we defined it in the first place).  So it works.
+And we didn't need `x = x`.
+
+And now for the caution about this method.
+[Global variables are evil](http://wiki.c2.com/?GlobalVariablesAreBad).
+(An interesting bit of computing history:
+Wiki Wiki Web was the first Wiki that Wikipedia and zillions of other wikis
+copy
+([Wikipedia entry Wiki](https://en.wikipedia.org/w/index.php?title=Wiki&oldid=752613214)).
+
+In serious work, global variables should never be used.
+Especially, they should never
+be used in code that you make for others to use.  What if you call the data
+`x` inside your function and the user calls the data `y` outside
+your function.  That won't work.  But if the `...` trick is used, then
+the user can still call the data `y` and make the argument to match
+`x` via the `...` mechanism `x = y`, that is, the argument
+named `x` (in the function you wrote) is the data named `y`
+(outside the function)
+by the user.
+
+So put `logl` back the way it was originally
+```{r label="logl-original"}
+logl <- function(alpha, x)
+    sum(dgamma(x, shape = alpha, log = TRUE))
+```
+and now call the data `y`
+```{r label="x-is-y"}
+y <- x
+rm(x) # now x is gone
+```
+and
+```{r label="mle-optimize-original"}
+oout <- optimize(logl, maximum = TRUE, interval, x = y)
+oout$maximum
+```
+still works.
+
+In short, *don't use global variables*.  Except.  The Perl slogan is
+TIMTOWTDI (there is more than one way to do it), pronounced tim-toady
+([Wikipedia entry](https://en.wikipedia.org/w/index.php?title=There%27s_more_than_one_way_to_do_it&oldid=754047450)).
+This could also be an R slogan.  There is no one true
+way to use R.  There are many ways of R.  As we said above, the way of
+this problem that uses global variables is the simplest, easiest, and most
+R-ish for one-off uses when the programmer and the user are one.
+
+You only need to avoid global variables to be politically correct in the
+computer science sense (as the Wiki Wiki Web page cited above explains)
+or to have your code usable by others (including your future self six
+months from now).
+
+
+## Part 1
+Modify the calculations of the above so that they are done by one R function.
+
+Your R function will have one argument, which is the data (x in the example in the notes) and will produce one scalar value, which is the MLE (maximum likelihood estimate) (oout\$maximum in the example in the notes).
+
+For this problem you can use the easier method because inside your function x is not a global variable (hence not evil) because it is a local variable in your function.
+
+Not only write a function, but also show it working on the data obtained by the R command
+
+```{r}
+x <- scan(url("http://www.stat.umn.edu/geyer/3701/data/q1p3.txt"))
+```
+
+## Part 2
+
+Write an R function that has three arguments the data vector x, just like before, a function that itself has two arguments,the (univariate) parameter theta and the data vector x, and an interval over which to search given by a vector of length two called interval.
+
+The function is supposed to return the log of the probability density function (PDF) or probability mass function (PMF), depending on whether the distribution of x is contiuous or discrete, respectively. (The reason we have the user supply the interval because there is no way we can tell what the range of values of the parameter is). One example of such a function is
+
+```{r,eval=FALSE}
+function(theta, x) dgamma(x, shape = theta, log = TRUE)
+```
+
+
+that we used in our function but another would be
+
+```{r,eval=FALSE}
+function(theta, x) dcauchy(x, location = theta, log = TRUE)
+```
+
+and yet another would be
+
+```{r,eval=FALSE}
+function(theta, x) dbinom(x, 20, prob = 1 / (1 + exp(- theta)), log = TRUE)
+```
+
+The idea is that the user provides a function for whatever the distribution the user wants.
+Modify your answer to first problem so it works as described here.
+
+If you use the gamma PDF function above as your function argument, then the data for problem 3 are appropriate.
+
+If you use the Cauchy PDF function above as your function argument, then the following data are appropriate
+
+```{r}
+x <- scan(url("http://www.stat.umn.edu/geyer/3701/data/q1p7c.txt"))
+```
+
+If you use the binomial PMF function above as your function argument, then the following data are appropriate
+
+```{r}
+x <- scan(url("http://www.stat.umn.edu/geyer/3701/data/q1p7b.txt"))
+```
+
+The parameter spaces are $0$ to $\infty$ for gamma, $-\infty$ to $\infty$ for Cauchy and binomial. But I assure you that the true unknown parameter values are less than 10 in absolute value and, for the gamma, greater than 0.1. You are relying on the user of your function to get this right, but while testing your function you have to play the role of the user.
+
+Show that your function works with all three of the user-supplied functions given above.
+
+
+# Question 4
+
+This question is an applied linear model question broken down into 4 parts.
+
+### Part 1
+
+Using the [gssr](https://kjhealy.github.io/gssr/) package. Use tidyverse methods to generate a data set  from `gss_panel06_long` with variables `c("age","sex","race","income","income06","rincome","vote00","vote04","vote08")`.
+
+### Part 2
+
+Use tidyverse to generate summary table for this data set (mean, sd, max, min, count).
+
+### Part 3
+
+Fit linear model using `lm` for `rincome` on `vote00`. Include some control variables and justify your final model. *Hint* Justify your model with some sort of analytic technique.
+
+### Part 4
+
+Check the assumptions of your model. Justify your choice of model diagnostics. 
+
+### Part 5
+
+Interpret your final model.
+
+
+## Solution
+
+
+
