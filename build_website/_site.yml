@@ -13,6 +13,12 @@ navbar:
           href: lab1/lab_week_1.html
         - text: "Week 2"
           href: lab2/lab_week_2.html
+    - text: "HWS"
+      menu:
+        - text: "HW 1"
+          href: homeworks/homework_1.html
+        - text: "HW 2"
+          href: homeworks/homework_2.html
 output:
   html_document:
     theme: paper
