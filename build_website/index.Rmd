@@ -4,12 +4,13 @@ title: SOC 506 Lab Website
 
 ## Week 1
 
-* Connor's R Lab
+* [Connor's R Lab](clab/soc506-2020-03-31.html)
 
 
 ## Week 2
 
 * [Lab 1 HTML](lab1/lab_week_1.html)
+* [Lab 2 HTML](lab1/lab_week_2.html)
 
 
 
