@@ -61,17 +61,17 @@ for(i in git_lop$package){library(package=i,character.only = TRUE) }
   + [RMarkdown](https://r4ds.had.co.nz/r-markdown.html)
 * [RMarkdown Vignette for gssr package](https://github.com/kjhealy/gssr/blob/master/vignettes/overview.Rmd)
 
-# Data and data management in R: A primer
-
-In this section of the lab we are going to use data from the [General Social Survey](https://gss.norc.org/) made available in R throught the [gssr](https://kjhealy.github.io/gssr/) package.
-
-## Basics of R, matrices and Data
+# Basics of R, matrices and Data
 
 For this discussion I have included [Charlie Geyer's](http://users.stat.umn.edu/~geyer/) R notes from his introduction to Computational Statistics course below. These notes are excellent and we will review them in course briefly.
 
 * [R Basics](basic.html)
 * [Arrays](array.html)
 * [Data Basics](data.html)
+
+# Data and data management in R: A primer
+
+In this section of the lab we are going to use data from the [General Social Survey](https://gss.norc.org/) made available in R throught the [gssr](https://kjhealy.github.io/gssr/) package.
 
 ## GSS {.tabset}
 
