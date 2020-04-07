@@ -1,6 +1,6 @@
 ---
-title: "Homework Template"
-subtitle: "SOC 506: Quantitative Techniques in Sociology"
+title: "Homework 1 - Introduction to R, MLE and LM"
+subtitle: "SOC 506: Quantitative Techniques in Sociology - Spring 2020"
 author: "[PUT YOUR NAME HERE]"
 date: "`r Sys.Date()`"
 output: 
