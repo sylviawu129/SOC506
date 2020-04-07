@@ -1,0 +1,15 @@
+---
+title: SOC 506 Lab Website
+---
+
+## Week 1
+
+* Connor's R Lab
+
+
+## Week 2
+
+* [Lab 1 HTML](lab1/lab_week_1.html)
+
+
+

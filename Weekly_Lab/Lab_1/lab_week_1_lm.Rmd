@@ -1,0 +1,73 @@
+---
+title: "Week 1 Lab - Linear Models"
+subtitle: "SOC 506: Quantitative Techniques in Sociology"
+author: "Zack W. Almquist, University of Washington"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+## Set knitr options here
+knitr::opts_chunk$set(echo = TRUE,
+                      comment = NA, 
+                      cache = TRUE,
+                      warning = FALSE,
+                      message = FALSE, 
+                      cache.lazy = FALSE
+                      )
+
+```
+
+```{r libraries, include=FALSE}
+## load necessary libraryies her
+
+## List of packages used
+lop <- c("tidyverse","maps","classInt","XML","RCurl","rlist",'kableExtra','alr3')
+git_lop<-list(
+  author = c('bbc','kjhealy'),
+  package = c('bbplot','gssr')
+)
+## Check if installed
+new.packages <- lop[!(lop %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+## Load packages
+for(i in lop){library(package=i,character.only = TRUE) }
+
+## check if installed
+new.packages <- lapply(git_lop,function(x){x[!(git_lop$package %in% installed.packages()[,"Package"])]})
+
+if(length(new.packages$package)>0){
+  for(i in 1:length(new.packages$package)){
+    devtools::install_github(paste(new.packages$author[[i]],new.packages$package[[i]],sep='/'))
+  }
+}
+
+
+## Load git libraries
+for(i in git_lop$package){library(package=i,character.only = TRUE) }
+
+```
+
+# The Regression Model 
+
+
+
+# Polynomial Regression
+
+# Transformations
+
+# Regression Diagnostics: Residuals
+
+# Variable Selection (Model Fit)
+
+# Nonlinear Regression
+
+* [JF Chapter](https://socialsciences.mcmaster.ca/jfox/Books/Companion/appendices/Appendix-Nonlinear-Regression.pdf)
+
+
+
+

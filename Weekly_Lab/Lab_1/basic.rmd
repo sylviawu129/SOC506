@@ -1,0 +1,2549 @@
+---
+title: "Stat 3701 Lecture Notes: Basics of R"
+author: "Charles J. Geyer"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:
+    number_sections: true
+    mathjax: "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+  pdf_document:
+    number_sections: true
+---
+
+> Can one be a good data analyst without being a half-good programmer? The
+> short answer to that is, 'No.' The long answer to that is, 'No.'
+>
+> --- Frank Harrell, 1999 S-PLUS User Conference, New Orleans (October 1999),
+> quoted by the R function `fortune` in the CRAN package `fortunes`
+
+# License
+
+This work is licensed under a Creative Commons
+Attribution-ShareAlike 4.0 International License
+(http://creativecommons.org/licenses/by-sa/4.0/).
+
+# R
+
+## Versions
+
+ * The version of R used to make this document is `r getRversion()`.
+
+ * The version of the `rmarkdown` package used to make this document is
+   `r packageVersion("rmarkdown")`.
+
+## History
+
+First came S, the first statistical computing language that was a real
+computer language.  It was invented at [Bell Labs](https://en.wikipedia.org/w/index.php?title=Bell_Labs&oldid=827987152)
+by John Chambers
+and co-workers.  Development started in 1975.  It was first distributed
+outside of Bell Labs in 1980.  Before 1988, S did not have real functions
+(it had macros to do the same job, but nowhere near as well).
+A version of S with real functions was released in 1998.
+
+S always was and still is proprietary software.  It is not free as in free
+beer nor free as in free speech.  After purchasing it, one can only use it
+as the license allows.  The name S is a one-letter name like C
+(another language from Bell Labs).  The "S" is for statistics.
+
+In 1988 another company was founded to market S, with additions,
+as a proprietary product called S-PLUS (or S+).  It still exists
+after several changes of ownership.
+
+Then came R, an implementation of a language very like S.
+It was invented at the University of Auckland by Ross Ihaka and Robert
+Gentleman.  The name R is a one-letter name like S but is also for
+Ross and Robert.  Development started in 1992.  The first stable release
+was in 2000.  R is now developed and maintained by the "R Development
+Core Team."
+
+R always was and still is free software.  It is free as in free
+beer and free as in free speech.  After downloading it for free,
+one can only use it as the license allows, but that license allows
+you to use it in any way you please and modify it in any way you please,
+subject only to the proviso that either you do not distribute your
+modifications outside of your organization or you distribute
+your modifications under the
+same license so that others are also free to use and modify your code
+as they please (subject to the same proviso).
+
+One might think that whether software is free or not makes no difference to
+ordinary users because they don't want to modify it.  But it makes a very big
+difference indirectly.  If anyone anywhere in the world wants to modify R to
+solve a problem they have, they can do so, and they can make their solution
+available to everyone everywhere if they chose (and according to the license
+if they make it available to anyone, then they have to make it available to
+everyone).  In contrast, proprietary software only gets features that the
+marketing department thinks will have a large enough number of users to make
+a profit.  Since R is the only widely used free software statistical computing
+language, it has thousands of features that are not in any proprietary
+statistical computing language.  So ordinary users may not want to modify R,
+but they benefit from the expert users who do want to.
+
+According to an [article in *IEEE Spectrum*](http://spectrum.ieee.org/static/interactive-the-top-programming-languages-2016),
+R is the fifth most popular
+computer programming language --- not the fifth most popular *statistical*
+language but the fifth most popular language overall.  Their top five
+were C, Java, Python, C++, and R in that order.  R is (according to them)
+almost as popular as C++.  The next most popular language that is vaguely
+similar is Matlab in fourteenth place (it is more a numerical analysis language
+than a statistics language).  The next most popular statistics language
+is SAS in thirty-ninth place.  No other statistical language is on their list,
+which ranks forty-nine languages.
+
+Several proprietary companies have been built on R.  In 2007 a company
+called Revolution Computing (later called Revolution Analytics, later
+sold to Microsoft) was founded to provide support for R and extensions
+for R specifically for big data.  In 2011 a company called RStudio provided
+a product of the same name that is an integrated development environment for
+R (and they also provide other tools for use with R).  Both RStudio and what
+used to be Revolution R Open, now Microsoft R Open, are free software.
+
+## CRAN and Bioconductor
+
+Everything R is found at CRAN (https://cran.r-project.org/)
+or Bioconductor (https://www.bioconductor.org/).
+
+CRAN is where you get R if you don't already have it or if you need
+a new version.
+CRAN is also where more than ten thousand contributed extension packages for R
+come from (CRAN said "12247 available packages" when I wrote this sentence,
+no doubt there are many more now).  Any of these packages can be installed
+in seconds with one R command (or by mousing around in the menus in you are
+using an R app).  These packages make R very powerful, able to do just about
+any statistical analysis anyone has ever thought of.
+
+I have a habit of pronouncing CRAN as cee-ran like CTAN (https://www.ctan.org/) and CPAN (http://www.cpan.org/) after which CRAN is modeled.  But almost
+everyone else pronounces it cran as in cranberry.  I am trying to change,
+but sometimes forget.
+
+Bioconductor is a smaller site that has many contributed extension packages
+for "bioinformatics" (it "only" has 1473 software packages as I write
+this sentence).  Bioconductor packages are also easy to install, although
+not quite as easy as CRAN packages.
+
+## Manuals
+
+All of the books that are the fundamental R documentation
+are free and found at CRAN (under the ["Manuals" link in the navigation](https://cloud.r-project.org/manuals.html)).
+We won't use any other books.
+
+The only one of the R manuals that is written for beginners (like you) is
+[*An Introduction to R*](https://cloud.r-project.org/doc/manuals/r-release/R-intro.html).
+You should take a look
+at it.  Anything that you find confusing in class or in the course notes
+(like this document) can probably be clarified by looking up the subject
+in *An Introduction to R*.
+
+## Other Books
+
+There are now hundreds of books about some statistical topic using R.
+As I write, there are 61 books in the "Use R!" series from
+Springer, 40 books in the "R series" from Chapman \& Hall/CRC,
+and (if I counted correctly) 130 books and videos with "R" in the title
+from O'Reilly.
+There are more from other publishers.
+Many of these books are very good, but we don't recommend any particular one
+for this course.
+
+## Why R?
+
+R is the language of choice for statistical computing, at least among
+research statisticians and new companies (start-ups and companies that were
+recently start-ups like Google, Facebook, Amazon, and the like).  The reasons
+are that R is a really developer friendly programming language.  If anyone
+anywhere in the world wants to make an R package to do some problem, CRAN
+will make it available to everyone everywhere.  And R does not make changes
+that break existing code (hardly ever).  So such packages are easy to maintain.
+There is nothing like CRAN for competing proprietary statistical computing
+languages.  Since R is free software, it is hackable by anyone who is a good
+programmer.  It can be made to do anything.  So again, if anyone anywhere in
+the world has solved your problem, there is likely a CRAN package to do what
+you want.  Or if you are a company with great engineers, they can make R do
+whatever the company needs.
+
+In older companies in which statistics has been important for many years
+(drug companies, for example) SAS may be what they use.  They've been using
+it for decades and don't want to change.  In other academic disciplines
+besides statistics, other computing languages may be used for statistics
+(SAS, SPSS, Stata, for example),
+but R is displacing them more and more.  The reason is that there is so
+much available in R that is not available anywhere else.  For example,
+the R package `aster` (http://cran.r-project.org/package=aster)
+does many forms of
+life history analysis that nothing else can do.  So if hundreds of biologists
+want to analyze their data, they have to learn R.  The ones that become
+good at it then become R advocates.
+Similar stories could be told about many kinds of statistical analysis that
+are available only in R.
+
+You also hear Python, Perl, Julia, and other dynamic programming languages
+recommended for statistics or "data science" but none of these languages
+actually have much real statistics available, not even 1% of what is
+available on CRAN and Bioconductor.  So they are useful if the
+statistics being done is very simple, but not otherwise.
+
+But the main reason we are teaching you R is that is what we know.  As a
+statistics major, you are doomed to learn R.
+
+# Some Very Basic Stuff
+
+## Style
+
+Many organizations have "style guides" for the languages their programmers
+use.  Many computer languages --- all modern ones, including R --- allow a
+great deal of latitude in how one writes.  This can make it difficult
+for one programmer to read code written by another.  So, just to make life
+easier for everyone, organizations make everyone use the same style.
+
+There are three style guides for R that are somewhat authoritative.
+The first two are actual style guides, one by Google
+(https://google.github.io/styleguide/Rguide.xml)
+and another (http://adv-r.had.co.nz/Style.html),
+a modification of the Google guide by Hadley Wickham,
+author of the R packages `ggplot2`, `dplyr`, and many more
+(collectively called the Hadleyverse) and Chief Scientist at RStudio
+(https://www.rstudio.com/).
+The other is the source code of R by the R Development Core Team.
+(Go to https://cran.r-project.org/ and download the source
+code for the current version.  I am not actually suggesting you do this now.
+Reading R source code is not easy.  You will have to do that eventually to
+become an R guru, if you want to be one.  But not yet.)
+
+## Commands
+
+R commands do not need semicolons.  R commands are terminated by newlines
+if they are syntactically complete.  Otherwise they continue on the next line.
+```{r, label="semicolons-one"}
+2 + 2
+2 +
+2
+(2
++ 2)
+```
+
+You can use semicolons to put a lot of R commands on one line, but don't
+(the Google R style guide recommends against this).
+```{r label="semicolons-two"}
+2 + 2; pi; "argle bargle"
+```
+
+## Assignment
+
+Use `<-` for assignment, not `=`.  Yes, the former is harder to
+type, but R from the most authoritative sources uses the former (including
+the R sources).  The assignment operator for R and the S language that
+preceded it was `<-` for decades before John Chambers
+decided
+to add `=` to make the C++ programmers happy, which of course it didn't
+(actually I have no idea what his motivation was).
+The style guides and the R source code do not agree with Chambers.
+
+Strangely, `->` is also an assignment operator.  There is also a function
+`assign`.  There are also `<<-` and `->>` operators.
+```{r label="assign"}
+foo <- 2
+foo
+foo = 3
+foo
+4 -> foo
+foo
+foo <<- 5
+foo
+6 ->> foo
+foo
+assign("foo", 7)
+foo
+```
+All of these do exactly the same thing in this context.  In other contexts,
+they do different things.
+Inside function bodies, the assignments with the double headed arrows do
+something different, which we won't explain here.
+The `assign` function with
+optional arguments allows the most flexibility in assignment and the most
+precise specification of where the assignment is done, and we won't explain
+that here either.
+
+In short, use `<-` for assignment.
+
+## Autoprinting
+
+An R command that is not an assignment and is executed at the top level
+(not inside a function) automatically prints the value of
+the expression.  So the way to see what an R object is, is just to make
+that object by itself an R command.
+```{r label="nonass"}
+x <- 1
+x
+```
+If the object is way too big to worth looking at, the R functions
+`head`, `tail`, and `summary`, may be helpful.
+```{r label="nonass-too"}
+x <- rnorm(10000)
+head(x)
+tail(x)
+summary(x)
+```
+
+This feature is called autoprinting, and, though it seems very simple,
+it is actually rather complicated.   It can be changed by using the
+R function `invisible`, which makes what would ordinarily print
+not print, and it actually works by hidden calls to the R function
+`print` or `show` (for S4 objects), which are generic functions,
+so what gets printed is appropriate for the type of object.
+That explanation may make no sense at this point, more about this later.
+[Section 1.6 of *R Internals*](https://cloud.r-project.org/doc/manuals/r-release/R-ints.html#Autoprinting)
+explains (but that reference also makes no sense to beginners).
+
+Summary: assignment commands don't print their values and other commands do.
+
+This does not mean that assignment expressions don't have values.  They do.
+That's why
+```{r label="double assign"}
+x <- y <- 2
+x
+y
+```
+works.
+
+## Whitespace
+
+As in C and C++, whitespace is mostly not needed in R.  There are a few places
+where if things were run together, it would change the meaning, but not many.
+So one can write
+```{r label="whitespace"}
+x <- 2
+x<-2
+```
+but the style guides recommend using white space to make it easier for people
+to read, whether the computer needs it or not.
+
+## Objects
+
+> To understand computations in R, two slogans are helpful:
+>
+> * Everything that exists is an object.
+> * Everything that happens is a function call.
+>
+> --- John Chambers, quoted in Section 6.3 of *Advanced R* by Hadley Wickham
+
+In R everything is an *object*.  This is a triviality.  The technical
+term used to refer to R thingummies is *object*.
+
+## Object-Oriented Programming
+
+By calling thingummies "objects" this does not mean we are doing
+*object-oriented programming* (OOP) that you may have heard about
+in your C++ class.  R objects are not like C++ objects.  In R *everything*
+is an object.  In C++ only very special things that are instances of C++
+classes created with the C++ `new` operator are objects.  In R,
+numbers, functions, bits of the R language (R expressions) are also objects.
+In C++ those things are definitely not objects.  The C programming language
+doesn't have any objects at all, either in the C++ sense or the R sense.
+
+R is not a particularly OOPy language.  It does have three different OOP
+systems in the R core (the stuff you get without having to attach a package).
+And it has several more OOP systems in packages found in contributed extension
+packages on CRAN.
+But none of these OOP systems act like the C++ OOP system.
+Moreover none of the OOP systems are necessary to most R programming.
+Most R programming is not OOPy.
+
+So forget what you learned about OOP in your C++ course.  It won't help you
+with R.
+
+## Dynamic
+
+R is a *dynamic* programming language.  This means two things.
+
+ 1. Any name can be assigned objects of any type.  Unlike C and C++
+    you do not have to "declare" what type of object goes with each name.
+
+ 2. You don't compile in the sense that you compile C and C++.  You can
+    just type or cut-and-paste R commands into the R program and see what
+    happens.
+
+This makes R infinitely easier to program than C/C++.
+
+Nevertheless,  R is just as powerful a language as C++.  It is not as powerful
+as C.  You can write operating systems (Windows, OS X, Linux) in C but not
+in any other so-called high level language.
+
+## Reproducibility
+
+Although you can type or cut-and-paste R commands into the R program
+and see what happens,
+you shouldn't when doing serious work.  Put all of your R in a file,
+and run
+it in a clean R environment.  The command to do this from an operating
+system command line is
+```
+R CMD BATCH --vanilla foo.R
+```
+Here `foo.R` is the file with the R commands.
+A file called `foo.Rout` will be produced.  All of the R commands
+in `foo.R` will be executed and all of the results will go
+into `foo.Rout`.
+
+Except for randomness in random numbers used
+(and this can be removed by setting random number generator seeds, about
+which more later), this is 100\% reproducible.  Throwing code at the
+interpreter is not reproducible
+unless you deliberately start R so the global environment
+is empty and type in *exactly* the same commands every time.
+`R CMD BATCH` is much more reproducible.  We will insist that
+assignments use `R CMD BATCH` or something else 100\% reproducible
+(R markdown, for example).
+
+## Help
+
+The R function `help` gives you the somewhat inappropriately named
+help on a subject (usually on a function or on a dataset, but help on other
+things also exists).  Many people do not find this help helpful.  It depends
+on what you are looking for.
+
+R help pages are modeled after unix man pages.  They are supposed to be
+complete, concise, and correct.  Most computer "help" outside of R help
+pages or unix man pages is none of these things.  It tries to be helpful
+and friendly and thus omits lots of things (not complete), belabors what it
+does cover (not concise), and dumbs down things to the point of being wrong
+(not correct).  Many people nevertheless find this stuff helpful.  Again,
+it depends on what you are looking for.
+
+R help pages, on the other hand,
+do correctly answer all questions you might have.  But sometimes the answers
+are so terse, you may not understand them.
+They are thus useful only when you know the basics of the subject but need
+to know some technical detail that you either forgot or never new.
+*Exactly* what does this function do?
+*Exactly* what is the name of some argument to this function?
+Questions like that.
+R help pages do not give any background.  They do not tell you why or when
+you might want to use a function.
+
+For background, you need a book, perhaps *Introduction to R*, perhaps
+some other book.  In between help pages and books, are package vignettes,
+which not all packages have.  For example, in the CRAN package `mcmc`
+(http://cran.r-project.org/package=mcmc)
+there are several vignettes; the main one that shows
+basic use of the package is shown by the R commands
+```
+library(mcmc)
+vignette("demo", "mcmc")
+```
+(We cannot show the output of this command in this document because
+R displays the output in a separate window.  But if you do this
+interactively, it will work.  This applies to many commands in this section.)
+
+As an example of using help, I had to do `help(vignette)` because
+I can never remember whether this function is named `vignette` or
+`vignettes` or even how to spell it.  Moreover, I did not remember
+the order of the arguments or their names, so I needed the help for that too.
+
+To see all the vignettes for this package do
+```
+library(mcmc)
+vignette(package = "mcmc")
+```
+
+There is another command `help.search` that may be useful when
+you do not know the name of the function (or other thing) that you want
+help for.  For example
+```
+help.search("help")
+```
+returns a list of R functions that have "help" in their help page
+titles or names.  Some of these are involved in the R help system
+(including `help.search` itself); others are not.
+
+R has two shorthands for getting help.
+```
+?whatever
+??whatever
+```
+are shorthand for
+```
+help(whatever)
+help.search(whatever)
+```
+(The reason for the lack of quotation marks in these examples is explained
+in the following section).
+
+## Non-standard Evaluation
+
+Some R functions use what some call "non-standard evaluation,"
+(a term apparently coined by Hadley Wickham (http://adv-r.had.co.nz/).
+Instead of just evaluating their arguments, they play tricks with some of them.
+
+This "playing tricks" is possible because R expressions are R objects too.
+So R can look at them and try to understand them and not just evaluate them.
+
+An example of this is when you do a plot and do not specify labels for
+the horizontal and vertical axes, R makes up some labels from the expressions
+that specify the horizontal and vertical coordinates of the points plotted.
+
+Another example is help.
+```
+help("ls")
+help(ls)
+?ls
+?"ls"
+```
+all do the same thing (show the help for the R function named `ls`).
+But
+```
+help("function")
+help(function)
+?function
+?"function"
+```
+do not all do the same thing.  The ones without quotation marks are
+an error and an incomplete R statement, neither of which shows the help page.
+What is going on here?
+
+The non-standard evaluation here is inside the R function named `help`.
+Before that function is even invoked, the R interpreter (the part of the R
+program that actually executes R commands) must parse the command.
+The text `help(function)` is not a valid
+R statement because `function` is a keyword that must be followed by
+a function definition.  So an error occurs before the R function named
+`help` can try to do its trick of working whether or not there
+are quotation marks.  The problem is similar with `?function` except
+here since nothing follows `function` the R interpreter realizes that
+you could follow this with a definition of a function, so it just prints the
+prompt for a continuation line.  And, of course, this has nothing to do with
+what you wanted (help for the function named `function`).
+
+The example of the R help system, shows that non-standard evaluation is
+sometimes problematic.  When in doubt, use the quotation marks.
+
+A lot of R is like this.  R does a lot of tricky things that are helpful
+most of the time (omitting quotation marks saves two whole keystrokes when
+getting help) but when it is not helpful, it is *seriously* unhelpful.
+
+In programming, one should never use non-standard evaluation unless that is
+what has to be done to get the job done.
+For example, inside a function you are writing, you may need
+to assure that a package is loaded,  The function for this is named
+`require`.  And it plays non-standard evaluation tricks just like
+`help`.  Both
+```{r label="require",eval=FALSE}
+require(mcmc)
+require("mcmc")
+```
+work.  But you should only use the latter in programs you write.
+
+The ability of R to do computing on the language is remarkable
+and far beyond what most computer languages can do (only LISP and Scheme
+are comparable).  So the fact that R can do non-standard evaluation is
+a good thing.  The fact that non-standard evaluation
+can be used where not helpful does not
+automatically make it bad.  Only that particular use is (arguably) bad.
+It probably should not have been used in the R functions `help`
+and `help.search`, but it is too late to change that now.
+
+# Functions
+
+## Functional Programming
+
+R is a *functional* programming language.  This means that functions
+are first class objects that you can do anything with that you could do to
+any other object.  You can assign them to variable names, or you can assign
+them to be parts of compound objects (like lists), or you can use them as
+arguments or values of other functions.
+
+In this one respect, R is exactly like Haskell or Javascript
+or F\# or Clojure or Ruby
+or other functional programming languages.  In other aspects, R is
+very different from those languages.
+
+> This [closures] is the best idea in the history
+> of programming languages.
+>
+> --- Douglas Crockford
+
+Crockford was talking about Javascript, but R has the same idea.  It is
+the function named `function`, which creates functions.  Technically,
+they are called "closures" for reasons to be explained later.
+```{r label="closure"}
+typeof(function(x) x)
+```
+
+In this respect R is different from and better than S.
+The R function named `function` works creates true closures,
+where S and S-PLUS did not,
+as explained in 
+[Section 3.3.1 of the R FAQ](https://cloud.r-project.org/doc/FAQ/R-FAQ.html#Lexical-scoping).
+
+## Pure Functional Programming
+
+In a *pure* functional programming language, functions do not have side
+effects.  If called with the same values for the same arguments, they must
+always produce the same results.
+
+There are very few totally pure functional programming languages
+because they cannot vary what they do to adjust to the outside world.
+They cannot do input or output, they cannot do random numbers, they
+cannot tell the time or date.  And so forth.  R isn't totally pure either.
+
+But it is more or less pure as far as computation goes.  Unlike C and C++
+functions, R functions cannot change the values of their arguments.
+In R there is
+only one kind of argument (R object).  There is none of this nonsense
+about pointers and references.  In C, you can write a function that changes
+its argument (or more precisely what its argument points to)
+```
+void bar(int *x)
+{
+    *x = 2;
+}
+```
+when you call it as follows
+```
+int one = 1;
+bar(&one);
+```
+after the call to `bar` returns, the value of `one` is 2.
+
+In C++ the above also works (because almost all C is also valid C++) but
+the following also works
+```
+void baz(int& x)
+{
+    x = 2;
+}
+```
+when you call it as follows
+```
+int one = 1;
+baz(one);
+```
+after the call to `baz` returns, the value of `one` is 2.
+
+In R nothing like this is possible the way R functions are commonly
+programmed.
+```{r label="no-side-effects"}
+ralph <- function(x) {
+    x <- 2
+    return(x)
+}
+x <- 1
+ralph(x)
+x
+```
+Inside the function, the value of `x` is changed to 2, but outside
+the function the value of `x` is unchanged by the function.
+There are two variables named `x` one inside the function and one
+outside.  This is just like C or C++ functions that have non-pointer,
+non-reference arguments.  The C or C++ function
+```
+int ralph(int x)
+{
+    x = 2;
+    return x;
+}
+```
+behaves just like our R function of the same name above.
+
+  R environments and R reference classes, which are syntactic
+sugar over environments, are exceptions.  But they are little used.
+(At least they are rarely used explicitly.  A new environment is involved
+in every function definition and every function invocation.
+More on this later.)
+
+The vast majority of R functions cannot change their arguments the way
+C and C++ functions can.  This makes R much easier for programmers to program,
+and, more importantly, *much easier for users to use*.  The only
+way an ordinary R function that does not do I/O or use random numbers can
+have an effect on the world outside itself is to return a value.
+
+Every time a function that does not do input, use random numbers, or access
+the date, time, process ID, or some such thing (all of which are forms of input)
+is called with the same values of the same arguments, it will return the same
+result.  In short, it is *pure functional*.  Thus *pure functional*
+is the normal style of R programming.  Use it, don't try to fight it.
+
+If you need to return lots and lots of stuff, then put it in a list (which
+makes it one R object), and return that.  That's what model fitting functions
+like `lm` and `glm` do.  It is a very common R design pattern.
+More on this later.
+
+## Functions Assigned Names
+
+Here are some examples of R being a functional programming language.
+```{r label="fun1"}
+fred <- function(x, y) x + y
+fred(2, 3)
+```
+Never mind that this is just a toy example (we don't need a function
+for addition, we already have one).  This shows the idiomatic way to define
+a function in R, at least a one-liner.  A function that needs multiple lines
+of code for its implementation needs curly brackets around the body of the
+function
+```{r label="fun2"}
+fred <- function(x, y) {
+   x <- cos(x)
+   y <- exp(y)
+   x + y
+}
+fred(2, 3)
+```
+But unlike in C and C++, the curly brackets are not needed for one-liners.
+
+How does the function know what value to return?  It returns the value
+of the last expression it evaluates, in the examples above the value of
+`x + y`.
+
+The R function `return` immediately returns a value from a function
+(and no further code in the function body is executed).  So we could have
+written
+```{r label="fun3"}
+fred <- function(x, y) return(x + y)
+fred(2, 3)
+```
+if we wanted our function to look more like C/C++.  But it still doesn't
+really look like C or C++ because in them `return` is a keyword
+(part of the syntax of the language) not
+a function so one could write `return x + y` without parentheses.
+In R that is invalid.
+
+Unlike in C or C++, an R function cannot *not* return a value.
+Many R functions seem to not return a value, but they do.
+```{r label="fun4", fig.keep="none"}
+sally <- plot(1:10, 2:11)
+sally
+```
+If a function cannot think of anything better to return, it can return
+`invisible(NULL)`.  That means it returns the R object `NULL` and
+that object does not get printed when the value is not assigned so users
+don't see it and can imagine that it doesn't exist.
+
+But every function returns a value.  Many R functions that ordinary users think
+don't return values (because they never see them and don't wonder about them)
+actually return objects with useful stuff in them.  We won't worry about that
+now.  Just keep it in mind: every R function returns a value (which is an R
+object).
+
+Just one more example illustrating that the R function `return`
+returns immediately:
+```{r label="fun5"}
+fred <- function(x, y) {
+   x <- cos(x)
+   y <- exp(y)
+   return(x + y)
+   cat("just something here that can never get executed\n")
+}
+fred(2, 3)
+```
+
+## Functions as Arguments to Functions
+
+R functions can be arguments to other R functions.  The R function
+`optimize` optimizes functions of one (scalar) variable.
+Its first argument is the function to optimize, and the second is an interval
+over which to minimize it.
+```{r label="funopt1"}
+fred <- function(x) exp(x) - log(x)
+optimize(fred, c(0.1, 10))
+```
+If we look at a plot done by the following code
+```{r label=fig1code, eval=FALSE}
+curve(fred, from = 0.1, to = 10, log = "y")
+```
+which is
+```{r label=fig1, fig.cap="Graph of Mathematical Function Computed by R Function fred", echo=FALSE, fig.align = "center"}
+curve(fred, from = 0.1, to = 10, log = "y")
+```
+we can see that `optimize` seems to have found the solution.
+We used a log scale for the vertical axis because otherwise we wouldn't
+be able to see where the minimum was (try the same without `log = "y"`).
+
+This is a very common design pattern in R.  There is a function
+`integrate` that does integrals of R functions.  There is a
+function `uniroot` that finds zeros (roots) of R functions.
+In the recommended package `boot`
+(which comes with every R installation)
+there is a function `boot`
+that simulates the approximate sampling distribution of an arbitrary statistic
+specified by an R function using the nonparametric bootstrap.
+In the CRAN package `mcmc` (http://cran.r-project.org/package=mcmc)
+there is a
+function `metrop` that simulates random vectors having probability
+density function
+specified by an R function.  Many other functions use this pattern.
+To specify a function, use an R function.  To tell another R function
+about this function, pass this function as an argument to that function.
+
+The R functions of the apply family
+(`apply`, `eapply`, `lapply`,
+`mapply`, `rapply`, `sapply`, `tapply`,
+and `vapply`), and those of the higher-order function family
+(`Filter`, `Map`, and `Reduce`)
+all take an argument that is an R function that they apply to
+components of an object.  Also `sweep` and `outer` do this.
+In functional programming, a function that takes a function as an argument
+or returns another function as its value
+is called a *higher-order function*.
+(I didn't know about some of these until I looked them up to make this
+list.)
+Eventually, we will learn about all of these, but not right now.
+
+## Anonymous Functions
+
+R functions don't need names.  The R function whose name is `function`
+makes functions.  They don't need to be assigned to names to work.
+If we don't bother to give a function a name, the jargon widely used
+in functional programming is that we are using an *anonymous function*.
+We can redo the preceding example using an anonymous function.
+```{r label=funopt2}
+optimize(function(x) exp(x) - log(x), c(0.1, 10))
+```
+This is just the preceding example with the expression defining `fred`
+plugged in where `fred` was passed as an argument to `optimize`.
+In general, anyplace you can use an R object, you can also use an expression
+defining that object.
+
+You don't need to do things like this very often,
+```{r label=wtf-one}
+(function(x) exp(x) - log(x))(2.7)
+```
+but it does work.  Here an anonymous function is being evaluated at the
+argument value 2.7.  The parentheses around the function definition are
+necessary to make the whole function definition something we can apply
+the function invocation parentheses to.
+
+# Vectors
+
+In R all of the objects that "hold stuff" are vectors.  There are no objects
+that can hold only one number or only one character string.
+You may think there are, but those objects are really vectors.
+```{r label=one}
+one <- 1
+one
+is.vector(one)
+length(one)
+```
+Why does R print
+```
+[1] 1
+```
+and
+```
+[1] TRUE
+```
+for these results?  (The `##` in front of output is a foible of the
+R package `knitr` and also of `rmarkdown` which uses `knitr` that
+I am using to make this document.  It doesn't
+appear when you are using R yourself.)
+
+If a vector takes many lines to print, each line starts with the index of
+the first component of the vector to appear on that line.
+```{r label=many}
+1:40
+```
+As we can see, the R binary operator `:` makes sequences.
+As we can also see, R uses one-origin indexing like FORTRAN rather than
+zero-origin indexing like C and C++.
+
+R vectors come in two kinds.  In *atomic vectors* all of the components
+have to have the same type.  In *lists* the components can be
+of different types.
+
+## Types
+
+The types an R atomic vector can have are (table from
+[Section 2.1.1 of the *R Language Definition*](https://cloud.r-project.org/doc/manuals/r-release/R-lang.html#Vector-objects))
+
+typeof      mode        storage.mode
+----------  ----------  ----------
+logical     logical     logical
+integer     numeric     integer
+double      numeric     double
+complex     complex     complex
+character   character   character
+raw         raw         raw
+
+The column headings are the names of R functions (`typeof`,
+`mode`, and `storage.mode`) and the entries are what they
+say about various kinds of atomic objects.  There is one other R function
+of this kind, `class` that also gives useful information about R
+objects.
+
+### Numeric
+
+```{r label="type-one"}
+one <- 1
+typeof(one)
+mode(one)
+storage.mode(one)
+class(one)
+```
+The result of `storage.mode` is what C and C++ think of as the type.
+Type `"double"` means it is stored as a C or C++ `double`.
+
+One might ask, why is R storing the integer 1 as a double?  And the answer
+is sometimes it does.  For the most part R users (even knowledgeable users)
+do not need to distinguish between integers and doubles
+(between "fixed point" and "floating point" numbers).  The R functions
+`mode` and `class` don't distinguish, reporting `"numeric"`
+for both.
+
+\pagebreak[3]
+Let's try another.
+```{r label="type-two"}
+lone <- length(one)
+typeof(lone)
+mode(lone)
+storage.mode(lone)
+class(lone)
+```
+For some reason, the R function `length` returns its result as
+numbers of type
+`"integer"`.  So we see R really does have two kinds of numbers.
+But, as we said above, most users never notice the difference and don't
+need to notice.
+
+This is different from C and C++ which have an insane assortment of numbers.
+They have three floating point types (`float`, `double`, and
+`long double`) and I don't know how many integer types (`char`,
+`short`, `int`, `long`, and `long long`, and
+all of these with `unsigned` in front, like `unsigned char`,
+and maybe some I forgot about).  In R we don't worry about any of this.
+For the most part R numbers are just numbers, and we won't say any more about
+them until we discuss computer arithmetic.
+
+### Complex
+
+The `"complex"` type is what you'd expect.
+```{r label="type-three"}
+typeof(sqrt(-1))
+```
+Hmmmmm.  That didn't work.  Let's try again.
+```{r label="type-four"}
+typeof(sqrt(-1+0i))
+```
+What did they do?
+```{r label="type-five"}
+sqrt(-1)
+sqrt(-1+0i)
+```
+Apparently, R only thinks that $\sqrt{- 1} = i$ when you tell it that you
+are working with complex numbers by specifying $- 1$ as a complex number,
+`-1+0i` in R notation.  Otherwise, it says that square roots of negative
+numbers do not exist.  The result `NaN` stands for "not a number".
+We will learn more about it when we get to computer arithmetic.
+This behavior is useful in statistics, most of the time,
+because we don't use complex numbers much.
+
+### Logical
+
+In R the two logical values `TRUE` and `FALSE` are special
+values different from any numbers.  `TRUE` and `FALSE` are
+not R objects but keywords.
+The technical term in R for words that are part of the R syntax and cannot
+be variable names is "reserved word" rather than "keyword".  To see
+the documentation on them, do `?Reserved` or `help(Reserved)`.
+
+R, for backwards compatibility with its
+predecessor S, also understands `T` and `F` as synonyms,
+but you should never use them.  The difference is that `T` and
+`F` are not keywords but just R objects that can be redefined,
+and that will wreak havoc if you are expecting them to behave as logical
+values.
+```{r label="type-six"}
+typeof(TRUE)
+typeof(T)
+T <- "spaghetti"
+typeof(T)
+```
+If you try
+```{r label="type-true-error", error=TRUE}
+TRUE <- "spaghetti"
+```
+you will find that you can't do that.  `TRUE`
+is a keyword and cannot be the name of an R object.
+
+This is very different from ancient C and C++ which did not have logical
+types.  Instead they used zero or types convertible to zero like null pointers
+as their equivalent of `FALSE`, and everything else as their equivalent
+of `TRUE`.  Modern C and C++ do have what they call "Boolean" types,
+they are new and not used by all programmers.
+
+Always use `TRUE` and `FALSE`.
+Never use `T` and `F` instead.
+
+### Character
+
+Type `"character"`, also called "string" by some (probably because of
+the influence of C and C++), we have already seen.  Here is another example.
+```{r label="type-seven"}
+LETTERS
+```
+
+### Raw
+
+Type `"raw"` cannot be constructed in R.  It is there for the use of
+C or C++ functions called from R.  They can return objects of type
+`"raw"` that R does not understand and cannot use.  They can only be
+passed to C or C++ functions called from R that understand them.
+So we won't pay any more attention to this type.
+
+## Atomic Vectors
+
+We have already seen atomic vectors (since R has no scalars, every object
+that may have looked like a scalar is really an atomic vector).  So nothing
+more needs to be said except that R vectors are much smarter than C vectors.
+Like C++ objects of class `std::vector` they know their own size and
+type.  (In general, every R object knows lots of things about itself).
+Unlike C++ vectors, R vectors don't have methods.  Instead there are functions
+that work on them.  (This is because all of this goes back before R to S
+before it had OOP.)
+```{r label=vector}
+length(LETTERS)
+head(LETTERS)
+tail(LETTERS)
+length(colors())
+head(colors())
+tail(colors())
+length(1:20)
+length(double())
+```
+R is just fine with vectors of length zero.
+
+## Vectors, Operators, and Functions
+
+Since every R object that holds stuff
+(not functions, expressions, and the like) is a vector, operators and functions
+have to deal with that.  Since S and R have had this "everything is a vector"
+from their beginnings, every function and operator knows how do deal
+with vectors (at least each knows its own special way to deal with vectors).
+
+### Componentwise with Recycling
+
+Many mathematical functions deal with vectors the same way.  If the operands
+or arguments are vectors of the same length, they work componentwise.
+```{r label="vectorize-one"}
+1:5 + 6:10
+1:5 * 6:10
+1:5 ^ 6:10
+```
+Oops!  That last wasn't what we meant.
+```{r label="vectorize-two"}
+(1:5)^(6:10)
+```
+
+And many functions work the same
+```{r label="vectorize-three"}
+dnorm(1:5, 6:10, 11:15)
+```
+If we look up what this function does (`?dnorm`), we find that it
+calculates the probability density function of normal distributions;
+it calculates $f_{\mu, \sigma}(x)$, where the arguments to `dnorm`
+are $x$, $\mu$, and $\sigma$ in that order.  The call above is the same as
+```{r label="vectorize-four"}
+dnorm(1, 6, 11)
+dnorm(2, 7, 12)
+dnorm(3, 8, 13)
+dnorm(4, 9, 14)
+dnorm(5, 10, 15)
+```
+except for being five commands rather than one.
+
+When the arguments are different lengths, these operators and functions still
+work.  When one of the arguments is length one, these do what you'd expect.
+```{r label="vectorize-five"}
+1:5 + 2
+1:5 * 2
+(1:5)^2
+dnorm(1:5, 2, 2)
+```
+
+This is a special case of a more general rule called the *recycling rule*.
+
+ * If the operands or arguments are vectors of different lengths,
+   then the length of the result is the length of the longest operand
+   or argument.
+ * Each operand or argument is extended to this length by recycling:
+   for example an operand `1:2` is extended to length 5 as the vector
+   with components 1, 2, 1, 2, 1.
+
+This can be very confusing.
+```{r label="vectorize-confuse"}
+dnorm(1:2, 1:3, 1:5)
+dnorm(1, 1, 1)
+dnorm(2, 2, 2)
+dnorm(1, 3, 3)
+dnorm(2, 1, 4)
+dnorm(1, 2, 5)
+```
+Sometimes R gives a warning about this kind of confusion.
+```{r label="vectorize-confuse-too"}
+1:2 + 1:3
+```
+and sometimes it doesn't (as we saw above with `dnorm`).
+
+I don't recommend you use confusing recycling.  If you do, put in a comment
+to explain.
+
+### Reduce
+
+There is another common design pattern where functions take a vector and
+produce a number
+```{r label=reduce}
+sum(1:5)
+prod(1:5)
+max(1:5)
+min(1:5)
+```
+
+There is even a higher-order function `Reduce` that uses this design
+pattern with an arbitrary function.
+```{r label="reduce-reduce"}
+Reduce("+", 1:5, 0)
+Reduce(function(x, y) if (x > y) x else y, 1:5, -Inf)
+```
+(the first does the same as `sum`, the second does the same
+as `max`).
+
+### Ifelse
+
+Since every R object is a vector (except for those that aren't).  One
+should use this feature of the language as much as possible.  In R,
+iteration (`for` and `while` loops) is used much less than
+in C and C++.  A lot of iteration can be replaced by functions that operate
+on vectors (as all R functions have no choice but to do).
+
+For example, `sum` does sums without a loop, and `Reduce`
+does this for any operation.  The functions in the apply family (listed in
+[Section 4.4](#functions-as-arguments-to-functions)
+above allow the design
+pattern of componentwise calculation with recycling to be applied with
+arbitrary functions.
+
+The R function `ifelse` allows the if-then-else design pattern to be
+applied vectorwise.
+```{r label=ifelse}
+x <- rnorm(6)
+x
+ifelse(x < 0, x - 3, x + 3)
+x + 3 * sign(x)
+```
+
+## Indexing
+
+R has four (!)\ different ways to "index" vectors (extract subvectors, or
+otherwise refer to subvectors).
+
+ * vector of positive integers
+ * vector of negative integers
+ * logical vector
+ * character vector
+
+Indexing is also sometimes called subscripting.  Because vector indices are
+often denoted as subscripts in mathematics.  For example, `?Subscript`
+gives the help for the indexing operators, but so does `?Extract`, which
+is the official name of this help page (`Subscript` is an "alias").
+
+### Indexing with Positive Integers
+
+```{r label="index-one"}
+LETTERS[7]
+```
+But here as everywhere else what would be a scalar in C or C++ can be a
+vector in R
+```{r label="index-two"}
+LETTERS[2 * 1:7 - 1]
+```
+So that illustrates the first type (positive integer vector).
+
+### Indexing with Negative Integers
+
+```{r label="index-three"}
+LETTERS[- (2 * 1:7 - 1)]
+```
+(This would be different if we omitted the parentheses.)
+Negative indices indicate components to omit.  The result is
+all of the components except the ones whose indices are the positive
+integers corresponding to these negative integers.
+
+### Index Zero?
+
+```{r label="index-zero"}
+LETTERS[0:5]
+```
+Apparently zero is just ignored in an integer index vector.
+
+### Indexing with Logicals
+
+```{r label="index-four"}
+LETTERS[seq(along = LETTERS) %% 2 == 1]
+```
+The logical expression indicates odd indices.  We see a bunch of new stuff
+here.  The R function `seq` makes sequences more complicated than the
+`:` operator can make, although we could replace this with
+```{r label="index-five"}
+LETTERS[1:length(LETTERS) %% 2 == 1]
+```
+The `%%` operator calculates remainders (from division, in this case
+division by 2).  As in C and C++, the operator for logical equality
+is `==`.
+
+\pagebreak[3]
+We could also do this more simply with
+```{r label="index-five-and-a-half"}
+LETTERS[seq(1, length(LETTERS), 2)]
+```
+but that wouldn't illustrate logical indexing.
+
+### Indexing with Character Strings
+
+The fourth kind of indexing (with a character vector)
+doesn't work unless the R object we are taking
+components out of has names.  So let's give our example names.
+```{r label="index-six"}
+names(LETTERS) <- letters
+LETTERS[c("d", "o", "g")]
+```
+The R function `c` "concatenates" (pastes together) vectors
+to make one vector.
+
+Here we see a very powerful feature of R.  Some functions can appear on
+the left-hand side of an assignment.  Actually (technical quibble!),\ the
+function being called in the example above is not named `names` but
+rather is named `names<-`
+```{r label="names-left-hand-side"}
+get("names<-")
+```
+but most R users don't know that and don't need to know that.  They just
+"know" that `names` can be used on either side of an assignment.
+
+The R documentation encourages this way of thinking.  From the help page
+for these functions, which one gets by `?names` or `help(names)`,
+```
+Usage:
+
+     names(x)
+     names(x) <- value
+```
+
+Indexing also works on the left-hand side of an assignment.
+```{r label="index-seven"}
+LETTERS[seq(along = LETTERS) %% 2 == 1] <- "woof"
+LETTERS
+```
+
+The R objects `LETTERS` and `letters` are, like `T`
+and `F` and `pi` and some other things, already defined when you
+start R (all of the predefined constants, have the same help page, so
+asking for the help for any one of them shows all of them).
+
+When we started redefining `LETTERS` we made a new variable
+in our global environment (what R calls where it keeps objects you give names
+by assignment).  But the objects with the same names defined by R are still
+there hidden by our assignments (they are in another place, more on this
+later).  We can see them again by removing ours.
+```{r label="index-eight"}
+rm(LETTERS)
+LETTERS
+```
+This is the magic of R environments.  More on this later.
+
+## Type Coercion
+
+R, like C and C++ does a lot of *type coercion* (changing variable of
+one type into another behind your back).  Since R has fewer types than C and
+C++, its type coercion is (slightly) less crazy that C/C++'s.
+
+The most useful is coercion of logical to numeric in arithmetic contexts.
+For example,
+```{r label="coercion"}
+x <- rnorm(100)
+sum(x < 0)
+```
+counts how many components of `x` are negative.
+[Section 2.4 of *Introduction to R*](https://cloud.r-project.org/doc/manuals/r-release/R-intro.html#Logical-vectors)
+explains this.
+
+Sometimes useful and sometimes not is automatic coercion of all kinds of
+objects to character in character contexts.
+```{r label="coercion-too"}
+foo <- 1:10
+names(foo) <- foo + 100
+foo
+class(names(foo))
+letters[1:3] <- rnorm(3)
+letters[1:10]
+```
+
+The first is arguably useful.  The latter may do more harm than good.
+The character conversions are explained in
+[Section 2.6 of *Introduction to R*](https://cloud.r-project.org/doc/manuals/r-release/R-intro.html#Character-vectors).
+
+Coercions can also be performed by explict use of functions.
+```{r label="coercion-too-too"}
+as.character(1:5)
+as.numeric(letters[1:5])
+as.logical(0:5)
+```
+
+Here my claim that R help pages are complete, concise, and correct is wrong
+(in versions of R up to and including 3.4.4, but I have reported this as a
+bug so it presumably will be fixed in future versions of R; one member
+of the R core team commented on the bug that the information was in
+`?Logic` but apparently nowhere else).
+
+The help page for `as.logical` (in version 3.4.3 and before)
+does not say what it does when the
+argument is numeric.  It appears to be following the way of C and C++,
+converting zero
+to `FALSE` and everything else to `TRUE` except for `NA`
+or `NaN` which are left as (logical) `NA`.
+```{r label="coercion-na"}
+foo <- as.integer(c(0:5, NA))
+foo
+as.logical(foo)
+foo <- c(0:5, pi, NA, NaN)
+# has to be type double if contains pi
+foo
+as.logical(foo)
+```
+
+
+
+## Lists
+
+Vectors that are not atomic can hold different types of R object.
+They are created by the R function named `list`.
+```{r label="show-list"}
+sally <- list(color = "red", number = pi,
+    method = function(x, y) x + y)
+sally
+```
+And they are generally called lists.
+
+## More On Indexing
+
+With lists there are two kinds of indexing.
+All of what we saw in [Section 5.4](#indexing) above works on lists.
+But for lists there is also another entirely different kind, or perhaps
+two entirely different kinds, depending on how you count.
+
+```{r label="list-index-one"}
+sally[3]
+```
+makes a list whose single component is the third component of `sally`.
+That is often not what we want, so there is another kind of indexing using
+double square brackets.
+```{r label="list-index-two"}
+sally[[3]]
+```
+See the difference?
+
+ * `sally[3]` is a list having one element named `method`,
+    which is a function.
+ * `sally[[3]]` is that function.
+
+Hence `sally[3]` is equal to `list(sally[[3]])`.
+
+The reason why we need both kinds (single square brackets
+and double square brackets) is that you usually (?) want what double square
+brackets does, but that doesn't always work.
+```{r label="list-index-three", error=TRUE}
+sally[2:3]
+sally[[2:3]]
+```
+I didn't know what would happen with the latter until
+I tried it, but the documentation says double square brackets indexing
+can only select a single component (the argument must be a vector of length
+one).  Since these are operators the documentation is a bit hard to find.
+You need to quote bits of syntax to see the documentation.  For double square
+brackets `?"[["` or `help("[[")` does the job.  The same goes
+for other reserved words: `?"function"` or `help("function")` is
+the way to see the documentation for the function named `function`.
+
+One can also use the `$` operator instead of the `[[` operator
+if the list has names and if the name in question is a valid R name (also
+called symbol).  `?name` shows the documentation for that, except it
+doesn't tell you what the valid names are.  For some strange reason,
+`?make.names` does tell you what the valid names are.
+
+So
+```{r label="list-index-four"}
+sally$method
+sally[["method"]]
+sally[[3]]
+```
+all do the same thing.
+
+But if we change the example
+```{r label="list-index-five"}
+names(sally)[3] <- "function"
+sally[["function"]]
+sally[[3]]
+```
+but
+```
+sally$function
+
+## Error: unexpected 'function' in "sally$function"
+```
+`sally$function` is an error because `function` is
+an R reserved word hence not a valid name (this is not an Rmarkdown
+code chunk because `knitr` (which underlies `rmarkdown`)
+is too clever for its own good here
+and cannot just echo the actual R error message and has to make up its
+own error message, which is worthless).
+
+\pagebreak[3]
+As
+```{r label="list-index-six"}
+sally
+```
+suggests,
+```{r label="list-index-six-continued"}
+sally$`function`
+```
+does work, but IMHO this is less clear than `sally[["function"]]`.
+
+## Nit Picking about Indexing
+
+As with `+`, indexing syntax is syntactic sugar for function calls.
+```{r label="indexing-functions"}
+get("[")
+get("[[")
+get("$")
+get("[<-")
+get("[[<-")
+```
+but, like most R users, you don't need to know these functions exist unless
+you want to implement them yourself for some R class that you have created,
+but before we can understand what that means we would have to learn about
+the basic R OOP system (so-called S3 classes), and this is not the time for
+that.
+
+Nevertheless, this does illustrate the quotation in [Section 3.6](#objects)
+above: in R 
+*everything that happens is a function call,*
+even things that don't look at all like function calls.
+
+# More On Functions
+
+The examples in [Section 4](#functions)
+above illustrate most of the things that knowledgeable users of
+R (what this course is trying to turn you into) do with functions.
+But there is lots more to learn about functions.
+
+## Storing Functions in Objects
+
+One can put an anonymous function into a compound object.
+```{r label="funlist"}
+sally <- list(color = "red", number = pi,
+    method = function(x, y) x + y)
+sally$method(2, 3)
+```
+As we saw in [Section 5.7](#more-on-indexing) above,
+one R syntax to extract a named element from a list is the `$` operator
+The C++ syntax to extract a method or a field from an object is the `.`
+operator.  Since both languages are about the same age, there is no reason
+to think the C++ one is in any way better, even though it is more widely
+copied in other languages.  This sort of looks like `sally` is a
+C++-like object and `method` is a method of its class.  But R isn't
+using any such notions here.  An R list can contain anything.  So it can
+contain
+functions.  Here `sally$method` happens to be a function.  To invoke
+a function, you put its arguments in a comma-separated list in round brackets
+after it.  Like the example above.
+
+Here is another example that shows the same thing with weirder syntax.
+```{r label="funlist2"}
+sally[[3]](2, 3)
+```
+Here `sally[[3]]` is the third component of `sally`.
+We invoke it in the usual way.
+
+## Functions whose Values are Functions
+
+Here is an example of a function returning a function.
+```{r label="funval1"}
+fred <- function(y) function(x) x + y
+fred(2)(3)
+```
+Now we have gotten to the power of functional programming that makes it both
+much more powerful than procedural programming languages like C++ and Java
+but also very confusing to programmers trained in procedural programming.
+What is going on here?
+
+Here `fred` is a function whose value is a function.  So when we say
+`fred(2)` we have invoked the function `fred` with the argument
+`2` and gotten a function of one argument that adds 2 to that argument.
+(One might prefer saying it adds `y` to that argument, where `y`
+is the value of the argument of `fred`.  Here `y` is 2.)
+So `fred(2)` is a function of one variable, that adds 2 to its argument.
+We invoke it by putting its argument in parentheses after it.  Hence the above.
+
+All very logical.  Mr. Spock or Cmdr. Data would have no trouble.  You may
+have some trouble following this.
+
+Functions like this are used in various
+places in mathematics.  We can think of this `fred` as almost but not
+quite the same thing as our first example of a function named `fred`
+in [Section 4.3](#functions-assigned-names) above.
+They do the same thing.  Both "are" functions of two arguments that add
+their arguments, but "are" has to be in scare quotes because only the
+first example is really a function of two arguments.
+It is invoked `fred(2, 3)` just like any other R function of two
+arguments.  The higher-order version is a function of one argument that returns
+a function of one argument, so it is invoked `fred(2)(3)` as above.
+It is almost but not quite the same.  The two functions do the same thing,
+but they are not invoked in the same way.  Going from one to the other is
+called [currying and uncurrying](https://en.wikipedia.org/wiki/Currying).
+
+This design pattern is less widely used in R than the other kind
+of higher-order function (taking functions as arguments).  But there are
+a few examples.  The R function `ecdf`, given a data vector, returns
+the empirical cumulative distribution function (ECDF) corresponding to that
+data.
+What it returns is an R function that evaluates the ECDF.
+The R functions `D` and `deriv` differentiate R expressions
+```{r label="deriv-one"}
+D(expression(x^3), "x")
+D(expression(sin(x)), "x")
+deriv(expression(sin(x)), "x")
+```
+but `deriv` can also produce a function
+```{r label="deriv-two"}
+deriv(expression(sin(x)), "x", function.arg = "x")
+```
+Readers may find these examples using `deriv` incomprehensible at this
+point.  Hopefully, these will make sense after we learn more.
+
+## Partially Evaluated Functions
+
+Many, perhaps most, knowledgeable R users do not understand functions that
+return functions,
+currying, and uncurrying.  They do not need to because these techniques are
+not much used in R.  But they do understand something very similar.
+```{r label="funval2"}
+fred <- function(x, y) x + y
+fran <- function(x) fred(x, 2)
+fran(3)
+```
+Here we have a function `fred` with two arguments `x`
+and `y`, but we want to consider it a function of `x`
+only for fixed `y`.  We call this new function `fran`.
+This is a very useful technique.  It is widely used in mathematics.
+
+Name the mathematical functions that correspond to the R functions
+`fred` and `fran` by the letters $f$ and $g$, respectively
+(because in math we usually denote functions by single letters).
+What is the relationship between $f$ and $g$?  It is
+$$
+   g(x) = f(x, 2), \qquad \text{for all $x$}.
+$$
+This concept is so important that mathematicians have many ways to write it.
+We could also say that the function $g$ is $f(\,\cdot\,, 2)$.
+We could also say that the function $g$ is $x \mapsto f(x, 2)$.
+
+## Some Real Nit Picking
+
+### The Function Function
+
+We said above the R function named `function` makes other functions,
+but that is not quite correct.  If `function` were actually an R
+function then typing the function name on a line by itself would tell R to
+print the definition of the function.  This works with every other function,
+for example,
+```{r label="funname1"}
+sum
+```
+But it doesn't work with `function`: if you type `function`
+on a line by itself at the R interpreter, it just says this is not a complete
+command and gives you a continuation prompt.  So `function` is actually
+an R keyword (part of the syntax) rather than just the name of a function that
+is defined somewhere in R.  There is actually an R function named
+`function`, and it is called when expressions containing the keyword
+`function` are evaluated.  To see it we can do either of the following
+```{r label="funname2"}
+get("function")
+`function`
+```
+This doesn't tell us much, only that the R function named `function`
+is very low level.  There is almost no R code in its definition.
+
+### The Addition Function
+
+Here is another definition of our first example that is very hard to read.
+```{r label="funname3"}
+fred <- `+`
+fred(2, 3)
+```
+This tells us that in R *almost everything* is a function.
+A lot of R syntax is \href{http://www.catb.org/jargon/html/S/syntactic-sugar.html}{syntactic sugar} for function calls.  When you write `2 + 3` in R,
+what actually happens is that a function whose name is `+` and which
+has two arguments is invoked with 2 and 3 as the arguments.
+
+This illustrates again the quotation in [Section 3.6](#objects)
+above: in R 
+*everything that happens is a function call,*
+even things that don't look at all like function calls.
+
+### The Quit Function
+
+Why does one type `q()` to quit R if you are using the command line
+rather than a GUI?  Because the function named `q` is the function
+that quits R and `q()` is calling this function with no arguments.
+
+In R lots of things are functions that are not functions in other
+programming languages.
+
+# Still More On Functions
+
+Before you can consider yourself a knowledgeable R user, you have to know
+about
+
+ * named arguments,
+ * default values for arguments,
+ * missing arguments,
+ * `...` (the bit of R syntax that enables variable number of arguments)
+
+## Named Arguments
+
+Like in C and C++ every function argument in R has a name.  How else would
+you refer to it inside the function?
+Unlike in C and C++ the names of R function arguments can be used outside
+the function when invoking the function.  Here's an example.
+```{r label="arg-names"}
+fred <- function(x, y) x^y
+fred(2, 3)
+fred(3, 2)
+fred(x = 2, y = 3)
+fred(y = 3, x = 2)
+```
+Again, never mind that we don't need a function to do exponentiation because
+we already have the caret operator to do it.  This is just a toy function that
+unlike our earlier `fred` is not a symmetric function of its arguments.
+
+When we don't use names and reverse the order of the arguments, the value
+of the function changes.
+When we do use names, the order doesn't matter.  The names tell R which
+argument is which, and the order is ignored.
+This means users don't have to remember the order so long as they remember
+(or look up in the documentation) the names.
+
+R has a feature called *partial matching* of argument names (done by
+the R function `pmatch`).  Users don't have to specify the whole
+argument name, just enough to uniquely specify the argument.
+```{r label="arg-names-too"}
+fred <- function(xerxes, yolanda) xerxes^yolanda
+fred(y = 3, x = 2)
+```
+
+## Default Values for Arguments
+
+In an R function arguments can be given *default* values.  If the user
+omits the argument, then the default is used.
+```{r label="arg-defaults"}
+fred <- function(xerxes = 4, yolanda = 5) xerxes^yolanda
+fred()
+fred(2)
+fred(2, 3)
+fred(yola = 3)
+```
+
+Default values for arguments can be complicated expressions.
+```{r label="arg-defaults-two"}
+fred <- function(x, fun1 = mean, fun2 = function(x) mean(x^2))
+    fun2(x - fun1(x))
+fred(1:10)
+```
+
+The above definition is so confusing that I had trouble reading it a
+week after I wrote it.  The first line of the function definition is
+the signature (what the arguments are) and the second line is the body.
+This function calculates `fun2(x - fun1(x))`.
+
+By default `fred(x)` calculates the variance of the empirical distribution
+for data `x` (dividing by $n$ instead of $n - 1$).  But by using the
+optional arguments we can calculate the median absolute deviation from the
+median
+```{r label="arg-defaults-three"}
+fred(1:10, median, function(x) median(abs(x)))
+```
+
+Default values for arguments can also depend on other arguments.  My
+first attempt at writing the function above was
+```{r label="arg-defaults-four"}
+fred <- function(x, mu = mean(x), fun = function(x) mean(x^2))
+    fun(x - mu)
+fred(1:10)
+```
+This shows that the default value for the second argument (`mu`)
+can depend on the first argument (`x`).  The third argument does
+not depend on the first argument because in `function(x) mean(x^2))`
+the name `x` is the argument of the anonymous function this expression
+creates.  Unfortunately, this makes a bad example because this version of
+the function is harder to use, so we wouldn't actually write it this way.
+```{r label="arg-defaults-five"}
+fred(1:10, median(1:10), function(x) median(abs(x)))
+```
+
+For what seems to be the ultimate in R default values trickery, let us
+look at the R function `svd`
+```{r label="svd"}
+svd
+```
+The defaults for arguments `nu` and `nv` depend on `n`
+and `p` which don't exist when the function is invoked.  They aren't
+created until lines 5 and 6 of the function body.  But this works because
+R does *lazy evaluation* of function arguments.  They are not evaluated
+until they are used, and `nu` and `nv` are not used until
+line 9 of the function body, which is after `n` and `p` are
+initialized.  All of this is explained, more or less, in the documentation
+(`?svd`).
+
+## Missing Arguments
+
+Arguments can be missing whether or not there is a default value.
+But if so, the function must either never try to use them or define
+them itself.  And why would it want to do either of these?  That would
+be like not having the argument at all.
+
+But the R function `missing` allows us to do different things
+in the function
+depending on whether the argument is missing or not.  Here is an example
+```{r label="missing"}
+sample
+```
+It is clear that we have to use `missing` rather than a default
+argument in order to do different things in case the first argument
+has length one or not.
+
+Unfortunately, this is a horrible example of really bad programming.
+R does this to be backwards compatible with S, and S did it in an extremely
+misguided 
+attempt to be helpful.  But this is the kind of help users don't
+need.  It is very surprising.  Only the most expert of users can remember
+this weirdness, and they don't always remember it.  Better the
+original programmer of `sample` had never thought of this trick.
+This is an example you should not emulate!
+
+There are many examples in the R code base where `missing` is used
+well.  But they are complicated, and we don't want to explain them now.
+
+## ...
+
+The `...` syntax allows R functions to have an arbitrary number
+of arguments.  For example,
+```{r label="dots"}
+args(list)
+```
+The `...` matches every argument.  This shows how you can capture
+the `...` arguments if one wants to operate on them in a function
+you are writing
+```{r label="dots-capture"}
+alice <- function(...) {
+    args <- list(...)
+    if (is.null(args$fred)) args$fred <- "J. Fred Muggs"
+    args
+}
+alice(x = "foo", y = "bar")
+alice(fred = 10)
+```
+This is the design pattern you use when you want to set a `...` argument
+if the user has not set it, and otherwise want to leave it the way the
+user set it.  We also see that the R idiom for testing whether a list does
+not have a named element is `is.null(args$fred)`.
+
+Whether partial matching is used on arguments that are not `...`
+arguments depends on where the `...` is: named arguments
+that come before `...` are partially matched, and those that come after
+`...` are not partially matched.  This is so hard to remember that
+many help pages, for example `optimize`, explicitly say
+
+> Note that arguments after `...` must be matched exactly.
+
+```{r label="dots-example"}
+fred <- function(..., herman = "default")
+    list(dots = list(...), herman = herman)
+fred(g = 1:10, h = c("red", "orange", "yellow", "blue",
+    "green", "indigo", "violet"), i = function(x) x)
+```
+Argument `herman` is not matched by argument `h` because
+`herman` comes after `...` and so must be exactly matched.
+
+But
+```{r label="dots-example-two"}
+fred <- function(herman = "default", ...)
+    list(dots = list(...), herman = herman)
+fred(g = 1:10, h = c("red", "orange", "yellow", "blue",
+    "green", "indigo", "violet"), i = function(x) x)
+```
+Now argument `herman` is matched by argument `h` because
+`herman` comes before `...` and so may be partially matched.
+
+There are probably many uses of `...` that I have never thought of.
+The two main uses are
+
+ * to allow the function to work on a variable number
+    of arguments (like the R function `list` and many other R functions),
+    and
+ * to pass arguments to another function (like the R function
+    `optimize` and many other R functions).
+
+From `?optimize`, in the "Usage" section
+```
+     optimize(f, interval, ..., lower = min(interval),
+              upper = max(interval), maximum = FALSE,
+              tol = .Machine$double.eps^0.25)
+     optimise(f, interval, ..., lower = min(interval),
+              upper = max(interval), maximum = FALSE,
+              tol = .Machine$double.eps^0.25)
+```
+(R allows either American or British spelling for this function name)
+and later on in the "Arguments" section
+```
+     ...: additional named or unnamed arguments to be
+              passed to ‘f’.
+```
+
+### A Long Example (Maximum Likelihood Estimation)
+
+Suppose we want to do maximum likelihood estimation
+for the gamma distribution with unknown shape parameter and known
+scale parameter, which we take to be the R default value.
+```{r label=mle}
+# make up true unknown parameter value ("simulation truth")
+alpha <- pi
+# make up sample size
+n <- 30
+# make up data, set RNG seed to get same data every time
+set.seed(42)
+x <- rgamma(n, shape = alpha)
+# log likelihood function
+logl <- function(alpha, x)
+    sum(dgamma(x, shape = alpha, log = TRUE))
+# need interval to optimize over, true "unknown" parameter
+# value should be in interval mean(x) + or - 3 * sd(x)
+# because E(X) = alpha
+interval <- mean(x) + c(-1, 1) * 3 * sd(x)
+# but have to not allow non-positive parameter values
+interval <- pmax(mean(x) / 1e3, interval)
+# maximize the log likelihood
+oout <- optimize(logl, maximum = TRUE, interval, x = x)
+oout$maximum
+mean(x)
+```
+The point of showing both the maximum likelihood estimator (MLE) and the
+sample mean, both of which are consistent and asymptotically normal estimators
+of the unknown parameter $\alpha$, is just to show that they are different.
+
+A plot of the log likelihood done by the following code
+```{r label=fig2plot,eval=FALSE}
+mylogl <- Vectorize(function(alpha) logl(alpha, x))
+curve(mylogl, from = interval[1], to = interval[2],
+    xlab=expression(alpha), ylab=expression(logl(alpha)))
+```
+```{r label=fig2, echo=FALSE, fig.cap="Graph of Log Likelihood", fig.align="center"}
+mylogl <- Vectorize(function(alpha) logl(alpha, x))
+curve(mylogl, from = interval[1], to = interval[2],
+    xlab=expression(alpha), ylab=expression(logl(alpha)))
+```
+shows that the optimization seems to have worked.  The tricks needed to
+draw this curve we do not want to explain right now.
+
+All of that is interesting, and we will go over it in detail at some
+point in the course.  But in this section, the only point that is
+interesting is how we are using the `...` argument to `optimize`.
+The R function `optimize` does not have an argument named `x`
+or even an argument that comes before `...` in the argument list
+that can be partially matched to `x` (from the documentation quoted
+above only the arguments `f` and `interval` come before
+`...` and neither begins with `x`).  Thus `optimize`
+considers `x` a `...` argument and passes it to `f`
+when `f` is called (many times) from inside `optimize` to evaluate
+the function being maximized (that is `logl` which is called `f`
+inside `optimize`).  When `optimize` calls `f` it does
+it by defining an anonymous function
+```
+function(arg) f(arg, ...)
+```
+(typing `optimize` at the R command line shows you its definition)
+and since we know that in this case `...` matches only the argument
+`x = x`, this is the same as defining the objective function to be
+```
+function(arg) f(arg, x = x)
+```
+or, since `f` is another name for `logl`, as
+```
+function(arg) logl(arg, x = x)
+```
+
+Note that here the R function `optimize` is using the trick
+of "partially evaluated functions" explained in
+[Section 6.3](#partially-evaluated-functions) above.
+It takes the given function,
+which it calls `f` and which can have many arguments, and converts
+it to an anonymous function of one argument.  It passes this to a C function
+named `do_fmin` to actually do the optimization, so we cannot see how
+that works without reading the C source code for R, which we won't bother
+with.  The point is that this C function only needs to know how maximize
+R functions of one variable.  It doesn't need to know about any other
+variables.
+
+### Alternative Solution for that Long Example
+
+The preceding section shows the approved (in some circles) way to do that
+problem.
+
+But here is another way (that some people deem evil and stupid).
+Just define `logl` as a function of one variable.
+```{r label="mle-logl-alt"}
+logl <- function(alpha)
+    sum(dgamma(x, shape = alpha, log = TRUE))
+```
+and then do the optimization as before except now we omit the
+`x = x`.
+```{r label="mle-optimize-alt"}
+oout <- optimize(logl, maximum = TRUE, interval)
+oout$maximum
+```
+
+How does that work?  How does `logl` when called from within
+`optimize` find out what `x` is?
+
+The short answer is that it looks it up in the R global environment
+(which is where we defined it in the first place).  So it works.
+And we didn't need `x = x`.
+
+And now for the caution about this method.
+[Global variables are evil](http://wiki.c2.com/?GlobalVariablesAreBad).
+(An interesting bit of computing history:
+Wiki Wiki Web was the first Wiki that Wikipedia and zillions of other wikis
+copy
+([Wikipedia entry Wiki](https://en.wikipedia.org/w/index.php?title=Wiki&oldid=752613214)).
+
+In serious work, global variables should never be used.
+Especially, they should never
+be used in code that you make for others to use.  What if you call the data
+`x` inside your function and the user calls the data `y` outside
+your function.  That won't work.  But if the `...` trick is used, then
+the user can still call the data `y` and make the argument to match
+`x` via the `...` mechanism `x = y`, that is, the argument
+named `x` (in the function you wrote) is the data named `y`
+(outside the function)
+by the user.
+
+So put `logl` back the way it was originally
+```{r label="logl-original"}
+logl <- function(alpha, x)
+    sum(dgamma(x, shape = alpha, log = TRUE))
+```
+and now call the data `y`
+```{r label="x-is-y"}
+y <- x
+rm(x) # now x is gone
+```
+and
+```{r label="mle-optimize-original"}
+oout <- optimize(logl, maximum = TRUE, interval, x = y)
+oout$maximum
+```
+still works.
+
+In short, *don't use global variables*.  Except.  The Perl slogan is
+TIMTOWTDI (there is more than one way to do it), pronounced tim-toady
+([Wikipedia entry](https://en.wikipedia.org/w/index.php?title=There%27s_more_than_one_way_to_do_it&oldid=754047450)).
+This could also be an R slogan.  There is no one true
+way to use R.  There are many ways of R.  As we said above, the way of
+this problem that uses global variables is the simplest, easiest, and most
+R-ish for one-off uses when the programmer and the user are one.
+
+You only need to avoid global variables to be politically correct in the
+computer science sense (as the Wiki Wiki Web page cited above explains)
+or to have your code usable by others (including your future self six
+months from now).
+
+# Stop Me before I Crash and Burn
+
+There is a very old computer slogan GIGO (garbage in, garbage out)
+([Wikipedia entry](https://en.wikipedia.org/w/index.php?title=Garbage_in,_garbage_out&oldid=740536906))
+that goes back to the 1950's.  There is a more modern
+meaning *garbage in, gospel out* that refers to people believing
+anything that comes from a computer no matter how ridiculous (the internet
+is never wrong).
+
+Another R slogan could be *garbage in, error messages out* (GIEMO)
+R functions should not allow users to shoot themselves in the foot.
+They should not be *footguns*.
+This is unlike some languages we know
+
+> Within C++, there is a much smaller and cleaner language struggling to get
+> out. 
+>
+> --- Bjarne Stroustrup
+>
+> C makes it easy to shoot yourself in the foot; C++ makes it harder,
+> but when you do it blows your whole leg off.
+>
+> --- Bjarne Stroustrup 
+
+Since so much of R is functions, if none of the functions are footguns,
+then the whole language is not a footgun (almost).  Of course, some R
+functions are footguns, such as the notorious `sample` mentioned
+above ([Section 7.3](#missing-arguments)) and the notorious `[` function
+also mentioned above ([Section 5.4](#indexing)) but without mentioning
+its footgun behavior, which involves matrices (and will be explained
+in the [next handout](http://www.stat.umn.edu/geyer/3701/notes/array.html#the-square-brackets-function-is-a-footgun)).
+But the vast majority of R functions are not footguns because they follow
+GIEMO.  The first job of a good R function that is usable by humans who
+make mistakes is to check that no errors are possible.  In order to not
+be a footgun our log likelihood function in
+[Section 7.4.1](#a-long-example-maximum-likelihood-estimation) above should
+have been something like
+```{r label="logl-giemo"}
+logl <- function(alpha, x) {
+    stopifnot(is.numeric(alpha))
+    stopifnot(is.finite(alpha))
+    stopifnot(length(alpha) == 1)
+    stopifnot(alpha > 0)
+    stopifnot(is.numeric(x))
+    stopifnot(is.finite(x))
+    stopifnot(x > 0)
+    sum(dgamma(x, shape = alpha, log = TRUE))
+}
+```
+Of course, since `dgamma` is not a footgun, you can rely on it to
+catch some of these errors.  But you should not.  You should catch them
+yourself, for the following reasons.
+
+ * Just from looking at our code, we can tell our function is not a footgun.
+ * If we look at the R code for `dgamma`, we see that it hardly
+    checks anything and instead leaves these checks for the C function it calls
+    to do the work.
+ * Reading the C source code is hard.
+ * Actually, a lot more than hard.  We just don't want to go there.
+
+Let's check that it still works.
+```{r label="mle-optimize-giemo"}
+oout <- optimize(logl, maximum = TRUE, interval, x = y)
+oout$maximum
+```
+
+# Control-Flow Constructs
+
+## If-Then-Else
+
+R has loops and if-then-else, but they behave quite differently from C and C++.
+
+For one thing, like everything else in the R language, they are expressions.
+We have already seen this
+in [Section 5.3.2](#reduce) above where we used `if (x > y) x else y`
+as part of a larger expression.  You can't do that in C or C++.
+
+## For
+
+For another thing `for` loops in R iterate over the elements of a vector
+or list.  They do not do arithmetic on indices.  In this they work more like
+so-called for-each loops in Java or C++ (more on this below).
+
+Thus, while the C or C++ or Java
+```
+for (int i = 0; i < n; i++) {
+    // do case i
+}
+```
+does have an R equivalent
+```
+for (i in 1:n) {
+    # do case i
+}
+```
+the R is different in that it does not do any arithmetic on `i`
+and `1:n` is just a vector of integers like any other place `1:n`
+is used in R.
+
+R also has the following.  Suppose `todo` is a list of some sort(s)
+of R objects, then
+```
+for (o in todo) {
+    # process object o
+}
+```
+iterates over elements of this list.  This is what we mean by the `for`
+control-flow construct in R being more like for-each in Java or C++
+(and like nothing in C).
+
+Beginners who have been brainwashed in languages like C or C++ are tempted
+to treat `for` in R like `for` in C or C++, writing the last
+example with indices
+```
+for (i in 1:length(todo)) {
+    o <- todo[[i]]
+    # process object o
+}
+```
+This works, of course, but it is clumsy and inelegant.  Don't use indices
+unless you have to, for example, when processing several vectors of the
+same length in parallel.
+
+Just for our own amusement (readers can skip to the end of this subsection
+and not miss anything about R) we look at the Java and C++ for-each code.
+In Java if `todo` is an object of a class `Foo` that implements
+the `Iterable<Foo>` interface, then
+```
+for (Foo o : todo) {
+    // process object o
+}
+```
+does the same thing as the R for loop above.  The C++ analog looks just the
+same except that the description of what `todo` has to be in order
+for this to work is so complicated that I cannot figure out any way to condense
+it here.
+
+## Repeat
+
+Because R does not have the C and C++ kind of `for`, the R `for`
+cannot be used to write an infinite loop (that one leaves by
+using the `break` statement).
+The C or C++ idiom is
+```
+for (;;) {
+    // each time through the loop decide if we are ready
+    // to leave using a break statement
+}
+```
+The R equivalent is
+```
+repeat {
+    # each time through the loop decide if we are ready
+    # to leave using a break expression
+}
+```
+
+## Comment
+
+> Tradition among experienced S programmers has always been that loops
+> (typically `for` loops) are intrinsically inefficient: expressing
+> computations without loops has provided a measure of entry into
+> the inner circle of S programming.
+>
+> John Chambers (*Programming With Data,* p. 173)
+> quoted by the R function `fortune`
+> in the CRAN package `fortunes`}
+
+Sometimes you need loops.  Often you don't.  We didn't feel the need for
+any actual examples in this document.  We will avoid them whenever we can
+in this course.  Knowledgeable R users know that loops should be avoided
+when possible, whether or not they have the knowledge to actually avoid
+loops in any particular case.
+
+# An Extended Example
+
+## The Problem
+
+Write a function that does Winsorized means.  This is defined as replace
+$x$ of the data from each end with the closest data value that is not removed
+and then average.
+
+## The Design
+
+That is not enough of a problem statement.  We need a more careful statement
+before we start coding.  What values of $x$ are allowed?  Obviously we cannot
+remove more than all of the data so we must have $0 < x \le 0.5$.
+
+But we can't remove all of the data either, because otherwise
+"the closest data value that is not removed" makes no sense.
+So we must have $x < 0.5$.
+
+If there are an odd number of data points, then in order to keep at least one
+data point, we must have $x < (n - 1) / (2 n)$.
+If there are an even number of data points, then in order to keep at least one
+data point, in which case we must actually keep two because of symmetry,
+we must have $x < (n - 2) / (2 n)$.
+
+What if there are zero data points?  How should we define the mean of zero
+data points?  What does R do in this case?
+```{r label="mean-zero"}
+mean(double())
+```
+Presumably we should do the same thing for this case.
+
+What if there are missing data or "not a number" data?
+```{r label="mean-na"}
+mean(NA)
+mean(NaN)
+```
+Presumably we should do the same thing for these cases.
+
+Thus our function should look something like this
+```{r label="our-func-one"}
+winsorizedMean <- function(x, winsorize = 0.2) {
+    stopifnot(is.numeric(x))
+    stopifnot(is.numeric(winsorize))
+    stopifnot(length(winsorize) == 1)
+    stopifnot(0 < winsorize & winsorize < 0.5)
+    n <- length(x)
+    if (n == 0) return(NaN)
+    if (anyNA(x)) return(NaN)
+    # now calculate the Winsorized mean of x in the case where
+    # we know length(x) > 0 and there are no NA or NaN in x
+}
+```
+That takes care of the GIEMO issue.
+
+It does not agree with our previous design decision to return `NA`
+if there are `NA` in the input.  This is because
+```{r label="our-func-anyNA"}
+anyNA(NA)
+anyNA(NaN)
+```
+does not distinguish between `NA` and `NaN`.
+
+We had never heard of the function `anyNA` before writing this example.
+We found it discussed on the help page for `is.na`.
+
+Before we can adjust the data, we need it in sorted order because $x$
+at each end implicitly refers to the data in sorted order (as laid out
+on the number line).  There is an R function `sort` that does that.
+Looking at the help page for that, we see that there is a faster function
+`sort.int` that does partial sorting to make it even faster.
+Partial sorting seems to be just what we need here.  `?sort` says
+
+> If `partial` is not `NULL`, it is taken to contain indices of
+> elements of the result which are to be placed in their correct
+> positions in the sorted array by partial sorting.  For each of the
+> result values in a specified position, any values smaller than
+> that one are guaranteed to have a smaller index in the sorted
+> array and any values which are greater are guaranteed to have a
+> bigger index in the sorted array.
+
+If we do a partial sort that gets the two components that we use to replace
+other components correctly, then we can calculate the Winsorized mean.
+
+So what are those indices?  We are supposed to trim
+`n * winsorize` from each end.  But that may not be a round number.
+We need to round that down to find our how many data values to Winsorize
+at each end.  And how do we round?  The help page `?round` describes
+many functions that do rounding.  Reading their descriptions tells us
+that `floor` rounds down.
+
+So if we define
+```
+k <- floor(n * winsorize)
+```
+then the check
+```
+k < n / 2
+```
+will do the job of making sure that we have at least one non-replaced data
+value.  Then we want to do a partial sort getting the indices `k + 1`
+and `n - k` correct.
+
+And then what do we do?  We could do the replacement, but we could also
+just do the arithmetic without doing the replacement
+```
+(k + 1) * (x[k + 1] + x[n - k]) + sum(x[seq(k + 2, n - k - 1)])
+```
+divided by `n` is the Winsorized mean, except when
+`k + 2` > `n - k - 1`, in which case we should be taking the sum
+of an empty set of numbers (that is, zero) but the R function `seq`
+produces the sequence that goes *down* from `k + 2`
+to `n - k - 1` in this case, so that won't work.
+So we have to special case this.
+
+## The Implementation
+
+This leaves us with
+```{r label="our-func-final"}
+winsorizedMean <- function(x, winsorize = 0.2) {
+    stopifnot(is.numeric(x))
+    stopifnot(is.numeric(winsorize))
+    stopifnot(length(winsorize) == 1)
+    stopifnot(0 < winsorize & winsorize < 0.5)
+    n <- length(x)
+    if (n == 0) return(NaN)
+    if (anyNA(x)) return(NaN)
+
+    k <- floor(n * winsorize)
+    if (k >= n / 2) stop("winsorize too large")
+    if (k == 0) return(mean(x))
+    x <- sort.int(x, partial = c(k + 1, n - k))
+    if (k + 2 >= n - k - 1)
+        return(mean(x[c(k + 1, n - k)]))
+    else
+        return ((k + 1) * (x[k + 1] + x[n - k]) +
+            sum(x[seq(k + 2, n - k - 1)])) / n
+}
+```
+
+## Testing
+
+Once we have an implementation, we are about half done.  Now we need to
+test it to see that it works *correctly*.  And if we were putting this
+in an R package we were writing, we would also have to write a good help
+page.
+
+The tests should test all the behavior, including that it gives the right
+errors under the right conditions.
+```{r label="test-one",error=TRUE}
+winsorizedMean("fred")
+winsorizedMean(double())
+winsorizedMean(NA)
+winsorizedMean(NaN)
+winsorizedMean(1:10, 0.6)
+winsorizedMean(1:10, "fred")
+winsorizedMean(1:10, 1:10)
+winsorizedMean(1:10, -3)
+```
+
+OK, except we did not get the result expected when the input was `NA`.
+A look at the help page for `NA` tells us that the trouble is that
+there are NA values of each atomic vector type except `raw` and the default
+type is `logical`.  So try again.
+```{r label="test-two"}
+winsorizedMean(NA_real_)
+winsorizedMean(c(1.1, 2.2, NA))
+```
+OK.
+
+Now how do we get the "winsorize too large" error message?
+We actually cannot get that (I think).  If `winsorize` is
+less than $1/2$, then `k` should be less than `n / 2`.
+
+I confess that when I was writing this code, I forgot to put in checks
+that the `winsorize` argument was OK when I first wrote this function.
+Without those checks, the check about `k >= n / 2` does do something
+important.  While I was writing these tests, I realized I should be checking
+whether both arguments were wrong, and went back and inserted checks for
+the `winsorize` argument.  So now the check about `k >= n / 2` does
+nothing as far as I can see, but I left it in the code, because it
+does check a condition that we need to be true in order for the function to
+work correctly.  So if our analysis that it can never be triggered is wrong,
+it is there to save us.
+
+Now we need to test each code path that calculates a non-error result.
+There are three of them.
+```{r label="test-three"}
+# make up some data
+x <- rnorm(20)
+identical(winsorizedMean(x, 0.001), mean(x))
+```
+So the path where the Winsorized mean is just the mean seems to work.
+
+When do we have `k + 2 >= n - k - 1`?  We have equality when
+$$
+   2 k = n - 3
+$$
+and this means $n$ must be odd.  With our even-length data, we have
+$(n - 3) / 2 = 17 / 2 = 8.5$ and $k$ is greater than that when $k = 9$.
+And that should happen when `winsorize` is greater than $9 / 20$.
+```{r label="test-four"}
+identical(winsorizedMean(x, 0.499), median(x))
+```
+The reason why this test works is that in both cases the function is
+returning the average of the two middle values.
+
+Now for the last case, which does something really complicated and tricky.
+How do we test that?  My answer, developed over long experience in programming
+in R and C and many other languages, is that we redo the calculation in the
+least tricky, most straightforward way possible, a way that is hopefully
+obviously correct.  If we get the same answers both ways, we appear to be
+good.
+```{r label="test-five"}
+w1 <- winsorizedMean(x)
+sx <- sort(x)
+ilow <- seq(along = x) < length(x) * 0.2
+ihig <- seq(along = x) > length(x) * 0.8
+x.nonrep <- sx[! (ilow & ihig)]
+sx[ilow] <- min(x.nonrep)
+sx[ihig] <- max(x.nonrep)
+w2 <- mean(sx)
+identical(w1, w2)
+```
+What happened?
+```{r label="test-five-and-a-half"}
+w1 - w2
+```
+
+It looks like our function is broken.  But it may be that the test is wrong.
+So first we test the test.
+```{r label="test-five-and-three-quarters"}
+sort(x)
+sx
+```
+Our "hopefully obviously correct" method was wrong.  Here we have
+$n * `winsorize` = 20 \times 0.2 = 4$, so we should replace the
+four lowest values with the fifth lowest.  And we certainly did not do that.
+
+But first let us check that we are not making another mistake.
+```{r label="test-six"}
+floor(length(x) * 0.2)
+```
+OK.  At least our analysis that we should be replacing the four lowest and
+four highest is correct (despite inexactness of computer arithmetic).
+```{r label="test-six-point-one"}
+ilow
+ihig
+```
+Clearly, we wanted `<=` rather than `<` in our definitions of these.
+```{r label="test-six-point-two"}
+ilow <- seq(along = x) <= length(x) * 0.2
+ihig <- seq(along = x) >= length(x) * 0.8
+ilow
+ihig
+```
+If you so the arithmetic counting on your fingers, $20 \times 0.8 = 16$, so
+R is right, and my notion that this should do the Right Thing is Wrong.
+Try again.
+```{r label="test-six-point-three"}
+ihig <- rev(ilow)
+ihig
+```
+So now those are right.
+```{r label="test-six-point-four"}
+sx <- sort(x)
+sx
+x.nonrep <- sx[! (ilow & ihig)]
+x.nonrep
+```
+
+Oops!  That was just dumb.  I guess I needed a logical or rather than logical
+and or maybe just the parentheses in different places.
+```{r label="test-six-point-five"}
+x.nonrep <- sx[(! ilow) & (! ihig)]
+x.nonrep
+```
+OK.  Now for the rest of the check.
+```{r label="test-six-point-six"}
+sx[ilow] <- min(x.nonrep)
+sx[ihig] <- max(x.nonrep)
+w2 <- mean(sx)
+identical(w1, w2)
+```
+What happened?
+```{r label="test-six-point-seven"}
+w1 - w2
+```
+so it is not just inexactness of computer arithmetic.
+```{r label="test-six-point-eight"}
+sort(x)
+sx
+```
+That sure looks like what we are supposed to average to calculate the
+Winsorized mean.  So now that we think the check is right, it appears
+that our function is buggy.
+
+So now we have to debug it.
+```{r label="test-debug-one"}
+n <- length(x)
+winsorize <- 0.2
+k <- floor(n * winsorize)
+k
+myx <- sort.int(x, partial = c(k + 1, n - k))
+myx
+w3 <- (k + 1) * (myx[k + 1] + x[n - k]) +
+            sum(myx[seq(k + 2, n - k - 1)]) / n
+identical(w1, w3)
+```
+Oh!  In copying this code from the function definition, I found an error.
+A parenthesis was out of place.
+
+## Re-Implementation
+
+```{r label="our-func-final-too"}
+winsorizedMean <- function(x, winsorize = 0.2) {
+    stopifnot(is.numeric(x))
+    stopifnot(is.numeric(winsorize))
+    stopifnot(length(winsorize) == 1)
+    stopifnot(0 < winsorize & winsorize < 0.5)
+    n <- length(x)
+    if (n == 0) return(NaN)
+    if (anyNA(x)) return(NaN)
+
+    k <- floor(n * winsorize)
+    if (k >= n / 2) stop("winsorize too large")
+    if (k == 0) return(mean(x))
+    x <- sort.int(x, partial = c(k + 1, n - k))
+    if (k + 2 >= n - k - 1)
+        return(mean(x[c(k + 1, n - k)]))
+    else
+        return(((k + 1) * (x[k + 1] + x[n - k]) +
+            sum(x[seq(k + 2, n - k - 1)])) / n)
+}
+```
+Actually, I realized I had more than one parenthesis mistake in the last
+expression.  Hopefully, this works.
+
+## Re-Test
+
+```{r label="retest-one"}
+w1 <- winsorizedMean(x)
+identical(w1, w2)
+w1 - w2
+all.equal(w1, w2)
+```
+We should have remembered the slogan
+
+> Never test objects of type `"double"` for equality!  Use the
+> R function `all.equal` instead (which tests for close to equal,
+> using an optional argument `tolerance` to say how close).
+
+So our function works.
+
+And we also have to do all the rest of the tests.
+```{r label="retest-two",error=TRUE}
+winsorizedMean("fred")
+winsorizedMean(double())
+winsorizedMean(NA_real_)
+winsorizedMean(NaN)
+winsorizedMean(1:10, 0.6)
+winsorizedMean(1:10, "fred")
+winsorizedMean(1:10, 1:10)
+winsorizedMean(1:10, -3)
+identical(winsorizedMean(x, 0.001), mean(x))
+identical(winsorizedMean(x, 0.499), median(x))
+```
+
+I was happy with this for a day or two, but then I started to wonder about
+the definition of the sample median being different for even and odd sample
+sizes.  Is this still OK for odd $n$?
+```{r label="retest-three",error=TRUE}
+x <- rnorm(21)
+winsorizedMean("fred")
+winsorizedMean(double())
+winsorizedMean(NA_real_)
+winsorizedMean(NaN)
+winsorizedMean(1:10, 0.6)
+winsorizedMean(1:10, "fred")
+winsorizedMean(1:10, 1:10)
+winsorizedMean(1:10, -3)
+identical(winsorizedMean(x, 0.001), mean(x))
+identical(winsorizedMean(x, 0.499), median(x))
+w1 <- winsorizedMean(x)
+sx <- sort(x)
+ilow <- seq(along = x) <= length(x) * 0.2
+ihig <- rev(ilow)
+x.nonrep <- sx[(! ilow) & (! ihig)]
+sx[ilow] <- min(x.nonrep)
+sx[ihig] <- max(x.nonrep)
+w2 <- mean(sx)
+identical(w1, w2)
+```
+
+# Summary
+
+ 1. R good!
+ 1. Functions good!
+ 1. Vectors good!
+ 1. Vectorizing functions and operators good!
+ 1. Higher-order functions good!
+ 1. Global variables bad, except when they aren't.
+ 1. Garbage in, error messages out (GIEMO)!
+ 1. Design before you code!
+ 1. Test to assure correctness!
+ 1. Keep user interfaces simple.  Don't make users memorize
+      crazy special cases like the R function `sample` does.
+      KISS (keep it simple, stupid)!
+
+
+

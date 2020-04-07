@@ -1,0 +1,27 @@
+name: "SOC 506 Lab Website"
+navbar:
+  title: "SOC 506 Lab Website"
+  type: inverse
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Zack Almquist Website"
+      href: http://depts.washington.edu/zalmquist
+    - text: "Labs"
+      menu:
+        - text: "Week 1"
+          href: lab1/lab_week_1.html
+        - text: "Week 2"
+          href: lab2/lab_week_2.html
+output:
+  html_document:
+    theme: paper
+    highlight: default
+    toc: false
+    toc_float: false
+    css: styles.css
+    include:
+      after_body: footer.html
+    
+
+      
