@@ -10,7 +10,7 @@ title: SOC 506 Lab Website
 ## Week 2
 
 * [Lab 1 HTML](lab1/lab_week_1.html)
-* [Lab 2 HTML](lab1/lab_week_2.html)
-
+* [Lab 2 HTML](lab1/lab_week_1_part_2.html)
+* [R Slides](lecture/01-lecture/01-Lecture.html)
 
 

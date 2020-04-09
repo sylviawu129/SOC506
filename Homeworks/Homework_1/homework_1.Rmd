@@ -63,6 +63,17 @@ y<-rnorm(200,1,5)
 
 ## Solution
 
+
+Put your solution here!
+
+```{r}
+myR<-5
+print(myR)
+```
+
+
+`r myR` in text. THis is cool!
+
 # Question 2
 
 This is a modification of problem 1. Now we will allow unequal probabilities for the data values. So now we have two vectors of the same length, call them x and p and the latter is a probability vector, meaning its components are nonnegative and sum to one.

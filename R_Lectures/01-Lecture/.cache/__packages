@@ -1,0 +1,12 @@
+base
+slidify
+rCharts
+googleVis
+knitr
+htmlwidgets
+leaflet
+dplyr
+ggvis
+ggplot2
+usethis
+devtools

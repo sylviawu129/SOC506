@@ -1,0 +1,359 @@
+---
+title       : SOC 506 - R Lecture 1
+subtitle    : Basics of R
+author      : Zack W Almquist
+job         : University of Washington
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : [mathjax, quiz, bootstrap, interactive] # {mathjax, quiz, bootstrap}
+ext_widgets : {rCharts: [libraries/nvd3, libraries/leaflet, libraries/dygraphs]}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+logo        : W-Logo_RegistrationMark_Purple_26851.png
+biglogo     : Signature_Left_Purple_RGB.png
+assets      : {assets: ../../assets}
+--- .class #id
+
+<style type="text/css">
+body {background:grey transparent;
+}
+</style>
+
+## Course overview
+
+In this lecture we will cover
+- R
+- Software, IDEs and other necessary details
+- Some key aspects of R as Programing Language
+
+--- .segue bg:grey
+
+# First things first...
+
+--- .class #id
+
+## Why R?
+
+- [R](https://www.r-project.org/)
+
+
+--- .class #id
+
+## Why RStudio?
+
+- [Rstudio](https://www.rstudio.com/)
+
+--- .class #id
+
+## tidyverse
+
+- [tidyverse](https://www.tidyverse.org/)
+
+--- .class #id
+
+## Installing packages
+
+- CRAN Install
+```{r,eval=FALSE}
+install.packages("here")
+```
+- Github Install
+
+```{r,eval=FALSE}
+devtools::install_github("mages/googleVis")
+```
+
+--- .class #id
+
+
+## RMarkdown and Homeworks, Labs and Final Project
+
+- All Labs, HWs and Final Project will be written in RMarkdown and compiled to HTML
+- This makes a transparent document that includes all necessary R code
+- THis is part of the open and reproducible science movement.
+
+--- .class #id
+
+## Review of template
+
+- Next session will cover some basics of RMarkdown.
+
+--- .class #id
+
+### Header 
+
+```
+HEADER HERE
+```
+
+--- .class #id
+
+## R code
+
+- You can insert code by surrounding it with \`\`\`{r}, followed by \`\`\` (three more ticks)...
+
+\`\`\`{r}  
+code here  
+\`\`\`  
+
+- Here is an example of some simple math
+
+```{r}
+2 + 2
+```
+
+--- .class #id
+
+## Overview of R basics
+
+### Assignment
+
+```{r}
+foo <- 2
+foo
+foo = 3
+foo
+```
+
+--- .class #id
+
+## Overview of R basics
+
+### Assignment
+
+```{r}
+4 -> foo
+foo
+foo <<- 5
+foo
+6 ->> foo
+foo
+```
+
+--- .class #id
+
+## Overview of R basics
+
+### Assignment
+
+```{r}
+assign("foo", 7)
+foo
+```
+
+--- .class #id
+
+## Overview of R basics
+
+### Caclulator
+
+```{r}
+6*8
+4^3
+exp(1)   # exp() is the exponential function
+```
+
+--- .class #id
+
+## Overview of R basics
+
+### Caclulator
+
+```{r}
+pi     # the constant 3.14159265...
+sin(0)
+log(5) # unless you specify the base, R will assume base e
+log(5, base=10)  # base 10
+```
+```
+
+--- .class #id
+
+## Overview of R basics
+
+### Functions
+
+```{r}
+ralph <- function(x) {
+    x <- 2
+    return(x)
+}
+x <- 1
+ralph(x)
+x
+```
+
+--- .class #id
+
+## Overview of R basics
+
+### for loops
+
+```{r}
+ for( i in 1:5 ){
+        print(i)
+    }
+```
+
+--- .class #id
+
+
+## Overview of R basics
+
+### data types: vectors
+
+```{r}
+one <- 1
+one
+is.vector(one)
+length(one)
+```
+
+--- .class #id
+
+## Overview of R basics
+
+### data types: vectors
+
+```{r}
+1:40
+```
+
+--- .class #id
+
+## Overview of R basics
+
+### data types: vectors
+
+```{r}
+one <- 1
+typeof(one)
+mode(one)
+storage.mode(one)
+class(one)
+```
+
+--- .class #id
+
+## Overview of R basics
+
+### data types: vectors
+
+```{r}
+length(LETTERS)
+head(LETTERS)
+tail(LETTERS)
+length(colors())
+head(colors())
+tail(colors())
+length(1:20)
+length(double())
+```
+
+--- .class #id
+
+## Overview of R basics
+
+### data types: vectors
+
+```{r}
+1:5 + 6:10
+1:5 * 6:10
+1:5 ^ 6:10
+```
+
+--- .class #id
+
+## Overview of R basics
+
+### data types
+
+```{r}
+as.character(1:5)
+as.numeric(letters[1:5])
+as.logical(0:5)
+```
+
+--- .class #id
+
+## Overview of R basics
+
+### data.frames
+
+```{r}
+Grades <- data.frame(
+  Name  = c('Bob','Jeff','Mary','Valerie'), 	
+  Exam.1 = c(90, 75, 92, 85),
+  Exam.2 = c(87, 71, 95, 81)
+)
+
+```
+
+--- .class #id
+
+
+## Overview of R basics
+
+### data.frames
+
+R allows two differnt was to access elements of the `data.frame`. First is a matrix-like notation for accessing particular values. 
+
+  Format  |   Result
+--------- | --------------------------------------
+`[a,b]`   |  Element in row `a` and column `b`
+`[a,]`    |  All of row `a`
+`[,b]`    |  All of column `b`
+
+```{r}
+Grades[, 2]       # print out all of column 2 
+Grades$Name       # The $-sign means to reference a column by its label
+```
+
+--- .class #id
+
+## Overview of R basics
+
+### ifelse statement
+
+```{r}
+x <- rnorm(6)
+x
+ifelse(x < 0, x - 3, x + 3)
+x + 3 * sign(x)
+```
+
+--- .class #id
+
+## Overview of R basics
+
+### apply functions
+
+```{r}
+# Create the matrix
+m<-matrix(c(seq(from=-98,to=100,by=2)),nrow=10,ncol=10)
+
+# Return the product of each of the rows
+apply(m,1,prod)
+
+# Return the sum of each of the columns
+apply(m,2,sum)
+
+```
+
+--- .class #id
+
+## Overview of R basics
+
+### apply functions
+
+```{r}
+
+# Return a new matrix whose entries are those of 'm' modulo 10
+apply(m,c(1,2),function(x) x%%10) 
+```
+
+--- .class #id
+
+
+

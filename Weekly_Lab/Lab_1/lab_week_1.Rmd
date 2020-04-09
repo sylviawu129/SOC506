@@ -1,11 +1,12 @@
 ---
-title: "Week 1 Lab"
+title: "Week 1 Lab - Part 1"
 subtitle: "SOC 506: Quantitative Techniques in Sociology"
 author: "Zack W. Almquist, University of Washington"
 date: "`r Sys.Date()`"
 output: 
   html_document:
     toc: true
+    toc_float: true
     code_folding: hide
 ---
 
