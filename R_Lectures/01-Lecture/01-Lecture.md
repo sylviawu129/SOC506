@@ -36,6 +36,12 @@ In this lecture we will cover
 ## Why R?
 
 - [R](https://www.r-project.org/)
+- Open Source. 
+- Popular in Scientific and Industry
+- Lots of material available
+- Both a Dynamic and extensible library system
+- High level programming language
+- Programing language written for Statistics and data analysis
 
 
 --- .class #id
@@ -43,12 +49,20 @@ In this lecture we will cover
 ## Why RStudio?
 
 - [Rstudio](https://www.rstudio.com/)
+- Easy to use (really!)
+- Has a lot of money behind it and influential developers (e.g., Wadley Wickham)
+- Good support for Github, Projects and general management
+- Strong support for Rmarkdown (allows for Open Science and quick technical reports)
 
 --- .class #id
 
 ## tidyverse
 
 - [tidyverse](https://www.tidyverse.org/)
+- Important to be aware of, Wadley Wickham has been re-imagining R and how it interacts with the Data Science Community
+- Used a lot in industry
+- Powerful data management
+- Powerful graphics
 
 --- .class #id
 

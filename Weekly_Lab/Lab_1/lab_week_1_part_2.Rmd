@@ -299,7 +299,7 @@ coeftest(ols,clse)
 
 ## Nonlinear Regression
 
-The chapter on Nonlinear Regresion in R by Fox & Weisberg is available online, [here](https://socialsciences.mcmaster.ca/jfox/Books/Companion/appendices/Appendix-Nonlinear-Regression.pdf).
+The chapter on Nonlinear Regresion in R by Fox & Weisberg is available online, [here](https://socialsciences.mcmaster.ca/jfox/Books/Companion/appendices/Appendix-Nonlinear-Regression.pdf). An Journal of Statistical Software article on NLR is available, [here](https://www.jstatsoft.org/article/view/v066i05).
 
 ### NLR Details
 
