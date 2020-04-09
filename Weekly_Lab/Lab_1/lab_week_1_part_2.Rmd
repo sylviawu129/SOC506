@@ -110,22 +110,51 @@ for(i in git_lop$package){library(package=i,character.only = TRUE) }
 * One of the key things that any social scientists need in the current erra is a basic understanding of how to program in a high level language.
 * All labs, HWs and Lecture is going to have this kind of 'flavor' -- you will have to master some basic programing skills to be profecient in modern data analysis.
 
+## Goals of this Class
+
+* Maximally
+  + Experience with computational methods in R
+  + Knowledge of GLM for binary, Catagorical data
+  + Knowledge of advanced methods of Propensity Score and Mixed Effects
+  + Knowledge of bootstrap
+* Minimally
+  + Be able to read and peer review scholars using these techniques
+  + Know how to write up a technical report
 
 ## How should I approach the readings? 
 
-* I have provided and will continue to provide a very comperhensive reading set
+The readings are based on this philosophy. 
 
+* I have provided and will continue to provide a very comperhensive reading set.
+  + Note these are meant to represent a resource for current and future research.
+  + This means that you are not expected to *read* everything I have listed.
+  + You are expected to learn how to skim what you need as you need it.
+  + Some things will not make sense or will seem like extra at this time. That is ok! You may find it useful later (this will be true often in graduate school!)
 
-## What to hand in?
+* Take away:
+  + Skim - see what you know and what you don't know.
+  + Dig into what you need. This may be reviews on how R works, why it works and what it can do. This may be a new statistical technique.
+  + Everything we learn in this class can be implementable in R.
+  + Learning how to use complex software means lots of little failures for long term success.
+  + Make friends. Work in groups.
+
+## What to hand in? for the lab
 
 Knit this Rmarkdown document into an html file (`lab_week_1_part2.html`). This is the file to turn on canvas.
 
 ## What to get from Lab 1
 
 * [Lab 1 - Part 1](lab_1_week_2.html)
+  + This is a big document with lots of resources.
+  + Charlie's notes will be very useful for the HWs (though a bit idiosyncratic)
+  + Feel free to ignore things that don't seem useful, but pay close attention to the details on how R work. And the pieces on MLE (we will start MLE next week).
 
+## Homeworks
 
-
+* Homeworks are hard.
+* Homeworks take time. Start early.
+* Homeworks cover multiple weeks of material. Do not worry if you are not sure how to start every question, we probably haven't started the material yet if that is the case.
+* Homeworks are not meant to trick you. They are meant to teach how things work and why things work and test application. Keep this in mind.
 
 
 # R Review Activities
