@@ -19,6 +19,8 @@ navbar:
           href: homeworks/homework_1.html
         - text: "HW 2"
           href: homeworks/homework_2.html
+    - text: "Github"
+      href: https://github.com/zalmquist/SOC506
 output:
   html_document:
     theme: paper
